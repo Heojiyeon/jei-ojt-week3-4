@@ -1,9 +1,12 @@
 import AppRouter from './Router';
+import Layout from './components/Layout';
 
 const App = () => {
   return (
     <>
-      <AppRouter />
+      <Layout>
+        <AppRouter />
+      </Layout>
     </>
   );
 };

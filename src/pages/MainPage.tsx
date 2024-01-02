@@ -1,5 +1,17 @@
+import Choice from '@/components/Choice';
+import Format from '@/components/Format';
+import Toolbar from '@/components/Toolbar';
+import View from '@/components/View';
+
 const MainPage = () => {
-  return <div>Main Page</div>;
+  return (
+    <>
+      <Toolbar />
+      <Format />
+      <View />
+      <Choice />
+    </>
+  );
 };
 
 export default MainPage;
