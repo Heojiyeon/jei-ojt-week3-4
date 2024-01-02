@@ -16,6 +16,7 @@ module.exports = {
     'eslint-plugin-simple-import-sort',
     'unused-imports',
     'import',
+    'react-hooks',
   ],
   rules: {
     'react-refresh/only-export-components': [
@@ -35,7 +36,8 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-empty-function': 'off',
-    'react-hooks/exhaustive-deps': ['warn'],
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
     'import/order': [
