@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'SUIT-Regular';
+  font-weight: normal;
+  src: url('./fonts/SUIT-Regular.woff2') format('truetype');
+}
+
+body {
+  font-family: 'SUIT-Regular';
+}
