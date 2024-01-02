@@ -16,7 +16,7 @@ const LayoutContainer = styled('div')`
   padding: 0 1rem;
   position: relative;
   display: grid;
-  grid-template-rows: 2fr 8fr;
+  grid-template-rows: 1fr 9fr;
   grid-template-columns: 7fr 3fr;
 `;
 
