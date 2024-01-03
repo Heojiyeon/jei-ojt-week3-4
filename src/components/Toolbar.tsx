@@ -20,15 +20,29 @@ import {
   LuAlignHorizontalJustifyCenter,
   LuAlignVerticalJustifyCenter,
 } from 'react-icons/lu';
+import { useAtom } from 'jotai';
+import { isOpenModalAtom, modalTitleAtom } from '@/atoms/modal';
 
 const Toolbar = () => {
+  const [, setIsOpenModal] = useAtom(isOpenModalAtom);
+  const [, setModalTitle] = useAtom(modalTitleAtom);
+
+  const handleModal = (currTitle: string) => {
+    setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
+    setModalTitle(currTitle);
+  };
+
   return (
     <ToolbarContainer>
       <GroupContainer id="content-publish">
-        <Button onClick={() => console.log('save')}>
+        <Button
+          onClick={() => {
+            console.log('save');
+          }}
+        >
           {<FaSave size="1.5rem" />}
         </Button>
-        <Button onClick={() => console.log('preview')}>
+        <Button onClick={() => handleModal('Preview')}>
           {<MdPreview size="1.5rem" />}
         </Button>
       </GroupContainer>
@@ -36,7 +50,7 @@ const Toolbar = () => {
         <Button onClick={() => console.log('add text')}>
           {<TbTextIncrease size="1.5rem" />}
         </Button>
-        <Button onClick={() => console.log('add image')}>
+        <Button onClick={() => handleModal('Image List')}>
           {<LuImagePlus size="1.5rem" />}
         </Button>
         <Button onClick={() => console.log('add rectangle')}>
