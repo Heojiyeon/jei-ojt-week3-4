@@ -1,4 +1,5 @@
 import { isOpenModalAtom, modalTitleAtom } from '@/atoms/modal';
+import { pageAtom } from '@/atoms/pagination';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 import { ReactNode, useCallback } from 'react';
@@ -13,6 +14,7 @@ type ModalProps = {
 const Modal = ({ title, children }: ModalProps) => {
   const [, setIsOpenModal] = useAtom(isOpenModalAtom);
   const [, setModalTitle] = useAtom(modalTitleAtom);
+  const [, setPage] = useAtom(pageAtom);
 
   const closeModal = useCallback(
     (
@@ -24,6 +26,7 @@ const Modal = ({ title, children }: ModalProps) => {
 
       setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
       setModalTitle('');
+      setPage(1);
     },
     [setIsOpenModal, setModalTitle]
   );
@@ -39,7 +42,7 @@ const Modal = ({ title, children }: ModalProps) => {
         <ModalCloseButton onClick={closeModal}>
           <AiOutlineClose />
         </ModalCloseButton>
-        {children}
+        <ModalContentContainer>{children}</ModalContentContainer>
       </ModalContainer>
     </BackgroundDim>,
     document.body
@@ -57,7 +60,7 @@ const BackgroundDim = styled('div')`
 
 const ModalContainer = styled('div')`
   width: 940px;
-  height: 640px;
+  height: 680px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -79,6 +82,12 @@ const ModalCloseButton = styled('button')`
   margin: 4px;
   background: none;
   border: none;
+`;
+
+const ModalContentContainer = styled('div')`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default Modal;

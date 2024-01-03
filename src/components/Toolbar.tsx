@@ -16,18 +16,70 @@ import { TbTextIncrease } from 'react-icons/tb';
 
 import { MdAlignHorizontalCenter, MdAlignVerticalCenter } from 'react-icons/md';
 
+import { getImages } from '@/apis/image';
+import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
+import {
+  isOpenModalAtom,
+  modalContentAtom,
+  modalTitleAtom,
+} from '@/atoms/modal';
+import { numOfPageLimitAtom, pageAtom } from '@/atoms/pagination';
+import { Image } from '@/types/Image';
+import { useAtom, useAtomValue } from 'jotai';
 import {
   LuAlignHorizontalJustifyCenter,
   LuAlignVerticalJustifyCenter,
 } from 'react-icons/lu';
-import { useAtom } from 'jotai';
-import { isOpenModalAtom, modalTitleAtom } from '@/atoms/modal';
 
 const Toolbar = () => {
+  const page = useAtomValue(pageAtom);
+  const numOfPageLimit = useAtomValue(numOfPageLimitAtom);
+
   const [, setIsOpenModal] = useAtom(isOpenModalAtom);
   const [, setModalTitle] = useAtom(modalTitleAtom);
+  const [, setModalContent] = useAtom(modalContentAtom);
+  const [, setNumOfImages] = useAtom(numOfImagesAtom);
+  const [, setImages] = useAtom(ImagesAtom);
 
-  const handleModal = (currTitle: string) => {
+  /**
+   * 이미지 불러오기 기능
+   */
+  const handleImage = async () => {
+    const images = await getImages();
+
+    // extension이 존재하는 이미지 필터링
+    const filteredImages = images.filter(
+      (image: Image) => image.extension.length !== 0
+    );
+    setImages(filteredImages);
+    setNumOfImages(filteredImages.length);
+
+    const offset = (page - 1) * numOfPageLimit;
+    const slicedImages =
+      images && images.slice(offset, offset + numOfPageLimit);
+
+    const getImageUrl = (currentContent: Image) =>
+      `https://sol-api.esls.io/images/A1/${currentContent?.imageId}.${currentContent?.extension}`;
+
+    setModalContent(
+      <>
+        {slicedImages.map((image: Image) => (
+          <img
+            className="image-item"
+            key={image.imageId}
+            src={getImageUrl(image)}
+            alt="이미지"
+            width={150}
+            height={140}
+          />
+        ))}
+      </>
+    );
+  };
+
+  const handleModal = async (currTitle: string) => {
+    handleImage();
+
     setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
     setModalTitle(currTitle);
   };
@@ -50,7 +102,12 @@ const Toolbar = () => {
         <Button onClick={() => console.log('add text')}>
           {<TbTextIncrease size="1.5rem" />}
         </Button>
-        <Button onClick={() => handleModal('Image List')}>
+        <Button
+          onClick={() => {
+            handleModal('Image List');
+            getImages();
+          }}
+        >
           {<LuImagePlus size="1.5rem" />}
         </Button>
         <Button onClick={() => console.log('add rectangle')}>
