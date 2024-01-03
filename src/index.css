@@ -8,3 +8,17 @@ body {
   font-family: 'SUIT-Regular';
   background-color: #f0f0f0;
 }
+
+#modal-image-content {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(50px, 1fr));
+  column-gap: 2rem;
+  margin: 1rem;
+}
+
+.image-item {
+  position: relative;
+  width: 100%;
+  display: block;
+  margin-bottom: 1rem;
+}
