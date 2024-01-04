@@ -17,6 +17,7 @@ import { TbTextIncrease } from 'react-icons/tb';
 import { MdAlignHorizontalCenter, MdAlignVerticalCenter } from 'react-icons/md';
 
 import { getImages } from '@/apis/image';
+import { entireComponentAtom, isPolygonAtom } from '@/atoms/component';
 import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
 import {
   isOpenModalAtom,
@@ -30,6 +31,10 @@ import {
   LuAlignHorizontalJustifyCenter,
   LuAlignVerticalJustifyCenter,
 } from 'react-icons/lu';
+import FabricEllipse from './Fabric/FabricEllipse';
+import FabricPolyLine from './Fabric/FabricLine';
+import FabricRect from './Fabric/FabricRect';
+import FabricText from './Fabric/FabricText';
 
 const Toolbar = () => {
   const page = useAtomValue(pageAtom);
@@ -40,6 +45,8 @@ const Toolbar = () => {
   const [, setModalContent] = useAtom(modalContentAtom);
   const [, setNumOfImages] = useAtom(numOfImagesAtom);
   const [, setImages] = useAtom(ImagesAtom);
+  const [, setEntireComponent] = useAtom(entireComponentAtom);
+  const [, setIsPolygon] = useAtom(isPolygonAtom);
 
   /**
    * 이미지 불러오기 기능
@@ -99,7 +106,16 @@ const Toolbar = () => {
         </Button>
       </GroupContainer>
       <GroupContainer id="add-component">
-        <Button onClick={() => console.log('add text')}>
+        <Button
+          onClick={() => {
+            const newText = new FabricText();
+
+            setEntireComponent(prevEntireComponent => [
+              ...prevEntireComponent,
+              newText,
+            ]);
+          }}
+        >
           {<TbTextIncrease size="1.5rem" />}
         </Button>
         <Button
@@ -110,16 +126,47 @@ const Toolbar = () => {
         >
           {<LuImagePlus size="1.5rem" />}
         </Button>
-        <Button onClick={() => console.log('add rectangle')}>
+        <Button
+          onClick={() => {
+            const newText = new FabricRect();
+
+            setEntireComponent(prevEntireComponent => [
+              ...prevEntireComponent,
+              newText,
+            ]);
+          }}
+        >
           {<BiRectangle size="1.5rem" />}
         </Button>
-        <Button onClick={() => console.log('add circle')}>
+        <Button
+          onClick={() => {
+            const newEllipse = new FabricEllipse();
+
+            setEntireComponent(prevEntireComponent => [
+              ...prevEntireComponent,
+              newEllipse,
+            ]);
+          }}
+        >
           {<BiCircle size="1.5rem" />}
         </Button>
-        <Button onClick={() => console.log('add line')}>
+        <Button
+          onClick={() => {
+            const newPolyLine = new FabricPolyLine();
+
+            setEntireComponent(prevEntireComponent => [
+              ...prevEntireComponent,
+              newPolyLine,
+            ]);
+          }}
+        >
           {<PiLineSegment size="1.5rem" />}
         </Button>
-        <Button onClick={() => console.log('add polygon')}>
+        <Button
+          onClick={() => {
+            setIsPolygon(prevIsPolygon => !prevIsPolygon);
+          }}
+        >
           {<BiPolygon size="1.5rem" />}
         </Button>
         <Button onClick={() => console.log('add clock')}>
