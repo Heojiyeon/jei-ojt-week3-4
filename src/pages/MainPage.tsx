@@ -20,10 +20,12 @@ const MainPage = () => {
     <>
       {isOpenModal && (
         <Modal title={modalTitle}>
-          <div>
-            <div id="modal-image-content">{modalContent}</div>
-            <Pagination />
-          </div>
+          {modalTitle === 'Image List' && (
+            <div>
+              <div id="modal-image-content">{modalContent}</div>
+              <Pagination />
+            </div>
+          )}
         </Modal>
       )}
       <Toolbar />

@@ -85,7 +85,9 @@ const Toolbar = () => {
   };
 
   const handleModal = async (currTitle: string) => {
-    handleImage();
+    if (currTitle === 'Image List') {
+      handleImage();
+    }
 
     setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
     setModalTitle(currTitle);
