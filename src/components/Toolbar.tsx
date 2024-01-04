@@ -17,7 +17,11 @@ import { TbTextIncrease } from 'react-icons/tb';
 import { MdAlignHorizontalCenter, MdAlignVerticalCenter } from 'react-icons/md';
 
 import { getImages } from '@/apis/image';
-import { entireComponentAtom, isPolygonAtom } from '@/atoms/component';
+import {
+  entireComponentAtom,
+  isPolygonAtom,
+  selectedImagesAtom,
+} from '@/atoms/component';
 import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
 import {
   isOpenModalAtom,
@@ -47,10 +51,15 @@ const Toolbar = () => {
   const [, setImages] = useAtom(ImagesAtom);
   const [, setEntireComponent] = useAtom(entireComponentAtom);
   const [, setIsPolygon] = useAtom(isPolygonAtom);
+  const [, setSelectedImages] = useAtom(selectedImagesAtom);
 
   /**
    * 이미지 불러오기 기능
    */
+  const clickImage = (imageUrl: string) => {
+    setSelectedImages(prevSelectedImages => [...prevSelectedImages, imageUrl]);
+  };
+
   const handleImage = async () => {
     const images = await getImages();
 
@@ -70,16 +79,19 @@ const Toolbar = () => {
 
     setModalContent(
       <>
-        {slicedImages.map((image: Image) => (
-          <img
-            className="image-item"
-            key={image.imageId}
-            src={getImageUrl(image)}
-            alt="이미지"
-            width={150}
-            height={140}
-          />
-        ))}
+        {slicedImages.map((image: Image) => {
+          return (
+            <img
+              className="image-item"
+              key={image.imageId}
+              src={getImageUrl(image)}
+              alt="이미지"
+              width={150}
+              height={140}
+              onClick={() => clickImage(getImageUrl(image))}
+            />
+          );
+        })}
       </>
     );
   };

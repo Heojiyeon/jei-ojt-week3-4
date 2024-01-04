@@ -1,3 +1,4 @@
+import { addSelectedImagesAtom, selectedImagesAtom } from '@/atoms/component';
 import {
   isOpenModalAtom,
   modalContentAtom,
@@ -9,12 +10,23 @@ import Pagination from '@/components/Pagination';
 import Toolbar from '@/components/Toolbar';
 import View from '@/components/View';
 import Modal from '@/components/common/Modal';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 
 const MainPage = () => {
-  const isOpenModal = useAtomValue(isOpenModalAtom);
   const modalTitle = useAtomValue(modalTitleAtom);
   const modalContent = useAtomValue(modalContentAtom);
+
+  const selectedImages = useAtomValue(selectedImagesAtom);
+
+  const [isOpenModal, setIsOpenModal] = useAtom(isOpenModalAtom);
+  const [, setAddSelectedImages] = useAtom(addSelectedImagesAtom);
+
+  const handleAddImagesButton = () => {
+    if (selectedImages.length !== 0) {
+      setAddSelectedImages(prevAddSelectedImages => !prevAddSelectedImages);
+    }
+    setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
+  };
 
   return (
     <>
@@ -24,6 +36,7 @@ const MainPage = () => {
             <div>
               <div id="modal-image-content">{modalContent}</div>
               <Pagination />
+              <button onClick={handleAddImagesButton}>추가</button>
             </div>
           )}
         </Modal>
