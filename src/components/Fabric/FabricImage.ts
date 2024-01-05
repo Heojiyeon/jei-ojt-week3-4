@@ -5,12 +5,17 @@ import { v4 as uuidv4 } from 'uuid';
 type FabricImageProp = {
   imageUrl: string;
   addTargetComponent: (targetComponent: TargetComponent) => void;
+  deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
 
 class FabricImage {
   private FabricImage: fabric.Image;
 
-  constructor({ imageUrl, addTargetComponent }: FabricImageProp) {
+  constructor({
+    imageUrl,
+    addTargetComponent,
+    deleteTargetComponent,
+  }: FabricImageProp) {
     this.FabricImage = fabric.Image.fromURL(imageUrl, function (img) {
       img.set('name', uuidv4());
       img.set('width', 200);
@@ -26,6 +31,10 @@ class FabricImage {
 
     this.FabricImage.on('selected', () => {
       addTargetComponent(this.FabricImage);
+    });
+
+    this.FabricImage.on('deselected', () => {
+      deleteTargetComponent(this.FabricImage);
     });
   }
   render(): fabric.Image {

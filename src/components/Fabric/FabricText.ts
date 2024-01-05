@@ -4,12 +4,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 type FabricTextProp = {
   addTargetComponent: (targetComponent: TargetComponent) => void;
+  deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
 
 class FabricText {
   private FabricText: fabric.Text;
 
-  constructor({ addTargetComponent }: FabricTextProp) {
+  constructor({ addTargetComponent, deleteTargetComponent }: FabricTextProp) {
     this.FabricText = new fabric.Textbox('Text', {
       name: uuidv4(),
       stroke: '#3c3c3c',
@@ -27,6 +28,10 @@ class FabricText {
 
     this.FabricText.on('selected', () => {
       addTargetComponent(this.FabricText);
+    });
+
+    this.FabricText.on('deselected', () => {
+      deleteTargetComponent(this.FabricText);
     });
   }
   render(): fabric.Text {

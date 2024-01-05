@@ -4,11 +4,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 type FabricEllipseProp = {
   addTargetComponent: (targetComponent: TargetComponent) => void;
+  deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
 class FabricEllipse {
   private FabricEllipse: fabric.Ellipse;
 
-  constructor({ addTargetComponent }: FabricEllipseProp) {
+  constructor({
+    addTargetComponent,
+    deleteTargetComponent,
+  }: FabricEllipseProp) {
     this.FabricEllipse = new fabric.Ellipse({
       name: uuidv4(),
       width: 100,
@@ -28,6 +32,10 @@ class FabricEllipse {
 
     this.FabricEllipse.on('selected', () => {
       addTargetComponent(this.FabricEllipse);
+    });
+
+    this.FabricEllipse.on('deselected', () => {
+      deleteTargetComponent(this.FabricEllipse);
     });
   }
   render(): fabric.Ellipse {

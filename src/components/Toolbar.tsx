@@ -63,6 +63,14 @@ const Toolbar = () => {
     ]);
   };
 
+  const deleteTargetComponent = (targetComponent: TargetComponent) => {
+    setTargetComponent(prevTargetComponent => {
+      return prevTargetComponent.filter(
+        component => component.name !== targetComponent.name
+      );
+    });
+  };
+
   /**
    * 최초 이미지 렌더링 함수
    */
@@ -127,7 +135,10 @@ const Toolbar = () => {
       <GroupContainer id="add-component">
         <Button
           onClick={() => {
-            const newText = new FabricText({ addTargetComponent });
+            const newText = new FabricText({
+              addTargetComponent,
+              deleteTargetComponent,
+            });
 
             setEntireComponent(prevEntireComponent => [
               ...prevEntireComponent,
@@ -146,7 +157,10 @@ const Toolbar = () => {
         </Button>
         <Button
           onClick={() => {
-            const newText = new FabricRect({ addTargetComponent });
+            const newText = new FabricRect({
+              addTargetComponent,
+              deleteTargetComponent,
+            });
 
             setEntireComponent(prevEntireComponent => [
               ...prevEntireComponent,
@@ -160,6 +174,7 @@ const Toolbar = () => {
           onClick={() => {
             const newEllipse = new FabricEllipse({
               addTargetComponent,
+              deleteTargetComponent,
             });
 
             setEntireComponent(prevEntireComponent => [
@@ -172,7 +187,10 @@ const Toolbar = () => {
         </Button>
         <Button
           onClick={() => {
-            const newPolyLine = new FabricPolyLine({ addTargetComponent });
+            const newPolyLine = new FabricPolyLine({
+              addTargetComponent,
+              deleteTargetComponent,
+            });
 
             setEntireComponent(prevEntireComponent => [
               ...prevEntireComponent,

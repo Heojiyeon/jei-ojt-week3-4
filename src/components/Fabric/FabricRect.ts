@@ -4,11 +4,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 type FabricRectProp = {
   addTargetComponent: (targetComponent: TargetComponent) => void;
+  deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
 class FabricRect {
   private FabricRect: fabric.Rect;
 
-  constructor({ addTargetComponent }: FabricRectProp) {
+  constructor({ addTargetComponent, deleteTargetComponent }: FabricRectProp) {
     this.FabricRect = new fabric.Rect({
       name: uuidv4(),
       width: 100,
@@ -26,6 +27,10 @@ class FabricRect {
 
     this.FabricRect.on('selected', () => {
       addTargetComponent(this.FabricRect);
+    });
+
+    this.FabricRect.on('deselected', () => {
+      deleteTargetComponent(this.FabricRect);
     });
   }
   render(): fabric.Rect {

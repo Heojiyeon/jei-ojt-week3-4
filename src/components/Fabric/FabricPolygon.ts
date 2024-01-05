@@ -10,12 +10,17 @@ export interface Point {
 type FabricPolygonProp = {
   points: Point[];
   addTargetComponent: (targetComponent: TargetComponent) => void;
+  deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
 
 class FabricPolygon {
   private FabricPolygon: fabric.Polygon;
 
-  constructor({ points, addTargetComponent }: FabricPolygonProp) {
+  constructor({
+    points,
+    addTargetComponent,
+    deleteTargetComponent,
+  }: FabricPolygonProp) {
     this.FabricPolygon = new fabric.Polygon(points, {
       name: uuidv4(),
       width: 100,
@@ -32,6 +37,10 @@ class FabricPolygon {
 
     this.FabricPolygon.on('selected', () => {
       addTargetComponent(this.FabricPolygon);
+    });
+
+    this.FabricPolygon.on('deselected', () => {
+      deleteTargetComponent(this.FabricPolygon);
     });
   }
   render(): fabric.Polygon {

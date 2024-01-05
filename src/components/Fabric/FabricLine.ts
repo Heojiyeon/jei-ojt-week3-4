@@ -4,11 +4,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 type FabricPolyLineProp = {
   addTargetComponent: (targetComponent: TargetComponent) => void;
+  deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
 class FabricPolyLine {
   private FabricPolyline: fabric.Polyline;
 
-  constructor({ addTargetComponent }: FabricPolyLineProp) {
+  constructor({
+    addTargetComponent,
+    deleteTargetComponent,
+  }: FabricPolyLineProp) {
     this.FabricPolyline = new fabric.Polyline(
       [
         { x: 10, y: 10 },
@@ -31,6 +35,10 @@ class FabricPolyLine {
 
     this.FabricPolyline.on('selected', () => {
       addTargetComponent(this.FabricPolyline);
+    });
+
+    this.FabricPolyline.on('deselected', () => {
+      deleteTargetComponent(this.FabricPolyline);
     });
   }
 

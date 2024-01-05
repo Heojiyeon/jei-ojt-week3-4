@@ -2,6 +2,7 @@ import {
   addSelectedImagesAtom,
   entireComponentAtom,
   selectedImagesAtom,
+  targetComponentAtom,
 } from '@/atoms/component';
 import { fabric } from 'fabric';
 import { useAtom, useAtomValue } from 'jotai';
@@ -12,10 +13,22 @@ const View = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
 
   const entireComponent = useAtomValue(entireComponentAtom);
+  const targetComponent = useAtomValue(targetComponentAtom);
+
   const [selectedImages, setSelectedImages] = useAtom(selectedImagesAtom);
   const [addSelectedImages, setAddSelectedImages] = useAtom(
     addSelectedImagesAtom
   );
+
+  if (canvasRef.current !== null) {
+    canvasRef.current.on('selection:created', () => {
+      console.log('created targetComponent', targetComponent);
+    });
+
+    canvasRef.current.on('selection:cleared', () => {
+      console.log('cleared targetComponent', targetComponent);
+    });
+  }
 
   /**
    * 캔버스 내 이미지 컴포넌트 추가 함수
