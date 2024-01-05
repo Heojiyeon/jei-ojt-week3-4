@@ -127,7 +127,6 @@ const Toolbar = () => {
         <Button
           onClick={() => {
             handleModal('Image List');
-            getImages();
           }}
         >
           {<LuImagePlus size="1.5rem" />}
