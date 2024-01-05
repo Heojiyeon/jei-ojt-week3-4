@@ -1,10 +1,14 @@
+import { TargetComponent } from '@/atoms/component';
 import { fabric } from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
+type FabricPolyLineProp = {
+  addTargetComponent: (targetComponent: TargetComponent) => void;
+};
 class FabricPolyLine {
   private FabricPolyline: fabric.Polyline;
 
-  constructor() {
+  constructor({ addTargetComponent }: FabricPolyLineProp) {
     this.FabricPolyline = new fabric.Polyline(
       [
         { x: 10, y: 10 },
@@ -19,7 +23,12 @@ class FabricPolyLine {
         left: 10,
       }
     );
+
+    this.FabricPolyline.on('selected', () => {
+      addTargetComponent(this.FabricPolyline);
+    });
   }
+
   render(): fabric.Polyline {
     return this.FabricPolyline;
   }

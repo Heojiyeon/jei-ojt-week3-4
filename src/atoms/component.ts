@@ -13,8 +13,15 @@ export type EntireComponent =
   | FabricPolyLine
   | FabricImage;
 
+export type TargetComponent =
+  | fabric.Text
+  | fabric.Ellipse
+  | fabric.Image
+  | fabric.Polyline
+  | fabric.Rect;
+
 const entireComponentAtom = atom<EntireComponent[]>([]);
-const targetComponentAtom = atom([]);
+const targetComponentAtom = atom<TargetComponent[]>([]);
 
 const isPolygonAtom = atom(false);
 const polygonPointsAtom = atom<Point[]>([]);

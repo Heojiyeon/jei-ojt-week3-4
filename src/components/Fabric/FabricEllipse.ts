@@ -1,10 +1,14 @@
+import { TargetComponent } from '@/atoms/component';
 import { fabric } from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
+type FabricEllipseProp = {
+  addTargetComponent: (targetComponent: TargetComponent) => void;
+};
 class FabricEllipse {
   private FabricEllipse: fabric.Ellipse;
 
-  constructor() {
+  constructor({ addTargetComponent }: FabricEllipseProp) {
     this.FabricEllipse = new fabric.Ellipse({
       name: uuidv4(),
       width: 100,
@@ -15,6 +19,10 @@ class FabricEllipse {
       left: 10,
       rx: 50,
       ry: 50,
+    });
+
+    this.FabricEllipse.on('selected', () => {
+      addTargetComponent(this.FabricEllipse);
     });
   }
   render(): fabric.Ellipse {

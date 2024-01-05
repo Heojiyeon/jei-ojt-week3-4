@@ -18,9 +18,11 @@ import { MdAlignHorizontalCenter, MdAlignVerticalCenter } from 'react-icons/md';
 
 import { getImages } from '@/apis/image';
 import {
+  TargetComponent,
   entireComponentAtom,
   isPolygonAtom,
   selectedImagesAtom,
+  targetComponentAtom,
 } from '@/atoms/component';
 import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
 import {
@@ -49,6 +51,17 @@ const Toolbar = () => {
   const [, setEntireComponent] = useAtom(entireComponentAtom);
   const [, setIsPolygon] = useAtom(isPolygonAtom);
   const [, setSelectedImages] = useAtom(selectedImagesAtom);
+  const [, setTargetComponent] = useAtom(targetComponentAtom);
+
+  /**
+   * 선택된 컴포넌트 핸들링
+   */
+  const addTargetComponent = (targetComponent: TargetComponent) => {
+    setTargetComponent(prevTargetComponent => [
+      ...prevTargetComponent,
+      targetComponent,
+    ]);
+  };
 
   /**
    * 최초 이미지 렌더링 함수
@@ -114,7 +127,7 @@ const Toolbar = () => {
       <GroupContainer id="add-component">
         <Button
           onClick={() => {
-            const newText = new FabricText();
+            const newText = new FabricText({ addTargetComponent });
 
             setEntireComponent(prevEntireComponent => [
               ...prevEntireComponent,
@@ -133,7 +146,7 @@ const Toolbar = () => {
         </Button>
         <Button
           onClick={() => {
-            const newText = new FabricRect();
+            const newText = new FabricRect({ addTargetComponent });
 
             setEntireComponent(prevEntireComponent => [
               ...prevEntireComponent,
@@ -145,7 +158,9 @@ const Toolbar = () => {
         </Button>
         <Button
           onClick={() => {
-            const newEllipse = new FabricEllipse();
+            const newEllipse = new FabricEllipse({
+              addTargetComponent,
+            });
 
             setEntireComponent(prevEntireComponent => [
               ...prevEntireComponent,
@@ -157,7 +172,7 @@ const Toolbar = () => {
         </Button>
         <Button
           onClick={() => {
-            const newPolyLine = new FabricPolyLine();
+            const newPolyLine = new FabricPolyLine({ addTargetComponent });
 
             setEntireComponent(prevEntireComponent => [
               ...prevEntireComponent,
