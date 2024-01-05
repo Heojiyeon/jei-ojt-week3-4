@@ -20,6 +20,11 @@ class FabricText {
       fontFamily: 'SUIT-Regular',
     });
 
+    this.FabricText.set(
+      'data',
+      this.FabricText.toDataURL(this.FabricText.data)
+    );
+
     this.FabricText.on('selected', () => {
       addTargetComponent(this.FabricText);
     });

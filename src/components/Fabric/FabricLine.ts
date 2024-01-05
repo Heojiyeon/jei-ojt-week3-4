@@ -24,6 +24,11 @@ class FabricPolyLine {
       }
     );
 
+    this.FabricPolyline.set(
+      'data',
+      this.FabricPolyline.toDataURL(this.FabricPolyline.data)
+    );
+
     this.FabricPolyline.on('selected', () => {
       addTargetComponent(this.FabricPolyline);
     });

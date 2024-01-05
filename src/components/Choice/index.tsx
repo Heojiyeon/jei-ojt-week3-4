@@ -1,37 +1,44 @@
-import { CHOICES } from '@/mock/choice';
+import { targetComponentAtom } from '@/atoms/component';
 import styled from '@emotion/styled';
+import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { CiCirclePlus } from 'react-icons/ci';
 import Button from '../common/Button';
 import ChoiceOption from './ChoiceOption';
 
 const Choice = () => {
-  const [currentChoices, setCurrentChoices] = useState(CHOICES);
+  const [checkAddChoice, setCheckAddChoice] = useState(false);
 
-  //선택한 옵션만 checked 되도록 하는 함수
-  const checkSelectedOption = (targetId: number) => {
-    const changedChoices = CHOICES.map(choice => {
-      return choice.id === targetId
-        ? { ...choice, isCorrect: true }
-        : { ...choice, isCorrect: false };
-    });
+  const [targetComponent, setTargetComponent] = useAtom(targetComponentAtom);
 
-    setCurrentChoices([...changedChoices]);
+  /**
+   * 선택한 옵션만 checked 되도록 하는 함수
+   */
+  const checkSelectedOption = (targetId: number) => {};
+
+  /**
+   * choice 추가 버튼 클릭 시 choiceOption 변경
+   */
+  const handleAddChoiceButton = () => {
+    // choice 형태에 필요한 속성 추가해야 함
+    setCheckAddChoice(true);
+    // setTargetComponent([]);
   };
 
   return (
     <ChoiceContainer>
-      <Button onClick={() => console.log('add choice option')}>
+      <Button onClick={handleAddChoiceButton}>
         {<CiCirclePlus size="2rem" />}
       </Button>
       <ChoiceOptionsContainer>
-        {currentChoices.map(choice => (
-          <ChoiceOption
-            key={choice.id}
-            choice={choice}
-            onChange={checkSelectedOption}
-          />
-        ))}
+        {checkAddChoice &&
+          targetComponent.map((component, index) => (
+            <ChoiceOption
+              key={component.name}
+              order={index}
+              choice={component}
+            />
+          ))}
       </ChoiceOptionsContainer>
     </ChoiceContainer>
   );

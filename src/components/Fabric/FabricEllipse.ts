@@ -21,6 +21,11 @@ class FabricEllipse {
       ry: 50,
     });
 
+    this.FabricEllipse.set(
+      'data',
+      this.FabricEllipse.toDataURL(this.FabricEllipse.data)
+    );
+
     this.FabricEllipse.on('selected', () => {
       addTargetComponent(this.FabricEllipse);
     });

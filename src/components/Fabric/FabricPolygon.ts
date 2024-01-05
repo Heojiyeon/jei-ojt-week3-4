@@ -25,6 +25,11 @@ class FabricPolygon {
       left: 10,
     });
 
+    this.FabricPolygon.set(
+      'data',
+      this.FabricPolygon.toDataURL(this.FabricPolygon.data)
+    );
+
     this.FabricPolygon.on('selected', () => {
       addTargetComponent(this.FabricPolygon);
     });

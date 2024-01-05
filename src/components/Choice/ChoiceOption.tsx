@@ -1,33 +1,25 @@
-import { ChoiceOptionContent } from '@/types/Choice';
+import { TargetComponent } from '@/atoms/component';
 import styled from '@emotion/styled';
 import { FaTrash } from 'react-icons/fa6';
 import Button from '../common/Button';
-import Radio from '../common/Radio';
 
 type ChoiceOptionProp = {
-  choice: ChoiceOptionContent;
-  onChange: (targetId: number) => void;
+  choice: TargetComponent;
+  order: number;
 };
 
-const ChoiceOption = ({ choice, onChange }: ChoiceOptionProp) => {
+const ChoiceOption = ({ choice, order }: ChoiceOptionProp) => {
   return (
     <ChoiceOptionContainer>
-      <Radio isCorrect={choice.isCorrect} id={choice.id} onChange={onChange}>
-        <div>{choice.order}</div>
-        <OptionContentContainer>
-          <RemoveButtonContainer>
-            <Button onClick={() => console.log('remove')}>
-              {<FaTrash size="1.5rem" />}
-            </Button>
-          </RemoveButtonContainer>
-          <img
-            src={choice.imageUrl}
-            alt="option-image"
-            width={60}
-            height={60}
-          />
-        </OptionContentContainer>
-      </Radio>
+      <div>{order}</div>
+      <OptionContentContainer>
+        <RemoveButtonContainer>
+          <Button onClick={() => console.log('remove')}>
+            {<FaTrash size="1.5rem" />}
+          </Button>
+        </RemoveButtonContainer>
+        <img src={choice.data} alt="option-image" width={60} height={60} />
+      </OptionContentContainer>
     </ChoiceOptionContainer>
   );
 };

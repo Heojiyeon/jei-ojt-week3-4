@@ -19,6 +19,11 @@ class FabricRect {
       left: 10,
     });
 
+    this.FabricRect.set(
+      'data',
+      this.FabricRect.toDataURL(this.FabricRect.data)
+    );
+
     this.FabricRect.on('selected', () => {
       addTargetComponent(this.FabricRect);
     });

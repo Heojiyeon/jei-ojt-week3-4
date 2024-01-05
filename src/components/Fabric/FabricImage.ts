@@ -19,6 +19,11 @@ class FabricImage {
       img.set('left', 10);
     });
 
+    this.FabricImage.set(
+      'data',
+      this.FabricImage.toDataURL(this.FabricImage.data)
+    );
+
     this.FabricImage.on('selected', () => {
       addTargetComponent(this.FabricImage);
     });
