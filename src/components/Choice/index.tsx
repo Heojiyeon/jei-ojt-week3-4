@@ -1,4 +1,4 @@
-import { targetComponentAtom } from '@/atoms/component';
+import { choiceComponentAtom, targetComponentAtom } from '@/atoms/component';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
@@ -10,6 +10,7 @@ const Choice = () => {
   const [checkAddChoice, setCheckAddChoice] = useState(false);
 
   const [targetComponent, setTargetComponent] = useAtom(targetComponentAtom);
+  const [choiceComponent, setChoiceComponent] = useAtom(choiceComponentAtom);
 
   /**
    * 선택한 옵션만 checked 되도록 하는 함수
@@ -17,12 +18,18 @@ const Choice = () => {
   const checkSelectedOption = (targetId: number) => {};
 
   /**
-   * choice 추가 버튼 클릭 시 choiceOption 변경
+   * 컴포넌트를 선택지에 추가하는 함수
    */
   const handleAddChoiceButton = () => {
     // choice 형태에 필요한 속성 추가해야 함
-    setCheckAddChoice(true);
-    // setTargetComponent([]);
+    if (targetComponent) {
+      setChoiceComponent(prevChoiceComponent => [
+        ...prevChoiceComponent,
+        ...targetComponent,
+      ]);
+
+      setTargetComponent([]);
+    }
   };
 
   return (
@@ -31,14 +38,9 @@ const Choice = () => {
         {<CiCirclePlus size="2rem" />}
       </Button>
       <ChoiceOptionsContainer>
-        {checkAddChoice &&
-          targetComponent.map((component, index) => (
-            <ChoiceOption
-              key={component.name}
-              order={index}
-              choice={component}
-            />
-          ))}
+        {choiceComponent.map((component, index) => (
+          <ChoiceOption key={component.name} order={index} choice={component} />
+        ))}
       </ChoiceOptionsContainer>
     </ChoiceContainer>
   );

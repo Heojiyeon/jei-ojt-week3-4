@@ -22,6 +22,7 @@ export type TargetComponent =
 
 const entireComponentAtom = atom<EntireComponent[]>([]);
 const targetComponentAtom = atom<TargetComponent[]>([]);
+const choiceComponentAtom = atom<TargetComponent[]>([]);
 
 const isPolygonAtom = atom(false);
 const polygonPointsAtom = atom<Point[]>([]);
@@ -36,4 +37,5 @@ export {
   selectedImagesAtom,
   targetComponentAtom,
   addSelectedImagesAtom,
+  choiceComponentAtom,
 };
