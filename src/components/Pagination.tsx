@@ -1,7 +1,9 @@
+import { selectedImagesAtom } from '@/atoms/component';
 import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
 import { modalContentAtom } from '@/atoms/modal';
 import { numOfPageLimitAtom, pageAtom } from '@/atoms/pagination';
 import { Image } from '@/types/Image';
+import { clickImage, getImageUrl } from '@/utils/handleImage';
 import styled from '@emotion/styled';
 import { useAtom, useAtomValue } from 'jotai';
 import { useState } from 'react';
@@ -15,35 +17,37 @@ const Pagination = () => {
 
   const [, setPage] = useAtom(pageAtom);
   const [, setModalContent] = useAtom(modalContentAtom);
+  const [, setSelectedImages] = useAtom(selectedImagesAtom);
 
   const [startPageNumber, setStartPageNumber] = useState(0);
 
   const numOfImages = Math.ceil(totalNumOfImages / numOfPageLimit);
 
   const setModalContentByPage = async (currentPage: number) => {
-    const getImageUrl = (currentContent: Image) =>
-      `https://sol-api.esls.io/images/A1/${currentContent?.imageId}.${currentContent?.extension}`;
-
     const offset = currentPage * numOfPageLimit;
 
-    const slicedImages =
-      images && images.slice(offset, offset + numOfPageLimit);
+    if (images) {
+      const slicedImages = images.slice(offset, offset + numOfPageLimit);
 
-    setModalContent(
-      <>
-        {slicedImages &&
-          slicedImages.map((image: Image) => (
-            <img
-              className="image-item"
-              key={image.imageId}
-              src={getImageUrl(image)}
-              alt="이미지"
-              width={160}
-              height={140}
-            />
-          ))}
-      </>
-    );
+      setModalContent(
+        <>
+          {slicedImages &&
+            slicedImages.map((image: Image) => (
+              <img
+                className="image-item"
+                key={image.imageId}
+                src={getImageUrl(image)}
+                alt="이미지"
+                width={160}
+                height={140}
+                onClick={() =>
+                  clickImage(setSelectedImages, getImageUrl(image))
+                }
+              />
+            ))}
+        </>
+      );
+    }
   };
 
   return (

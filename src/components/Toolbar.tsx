@@ -28,9 +28,9 @@ import {
   modalContentAtom,
   modalTitleAtom,
 } from '@/atoms/modal';
-import { numOfPageLimitAtom, pageAtom } from '@/atoms/pagination';
 import { Image } from '@/types/Image';
-import { useAtom, useAtomValue } from 'jotai';
+import { clickImage, getImageUrl } from '@/utils/handleImage';
+import { useAtom } from 'jotai';
 import {
   LuAlignHorizontalJustifyCenter,
   LuAlignVerticalJustifyCenter,
@@ -41,9 +41,6 @@ import FabricRect from './Fabric/FabricRect';
 import FabricText from './Fabric/FabricText';
 
 const Toolbar = () => {
-  const page = useAtomValue(pageAtom);
-  const numOfPageLimit = useAtomValue(numOfPageLimitAtom);
-
   const [, setIsOpenModal] = useAtom(isOpenModalAtom);
   const [, setModalTitle] = useAtom(modalTitleAtom);
   const [, setModalContent] = useAtom(modalContentAtom);
@@ -54,12 +51,8 @@ const Toolbar = () => {
   const [, setSelectedImages] = useAtom(selectedImagesAtom);
 
   /**
-   * 이미지 불러오기 기능
+   * 최초 이미지 렌더링 함수
    */
-  const clickImage = (imageUrl: string) => {
-    setSelectedImages(prevSelectedImages => [...prevSelectedImages, imageUrl]);
-  };
-
   const handleImage = async () => {
     const images = await getImages();
 
@@ -70,30 +63,29 @@ const Toolbar = () => {
     setImages(filteredImages);
     setNumOfImages(filteredImages.length);
 
-    const offset = (page - 1) * numOfPageLimit;
-    const slicedImages =
-      images && images.slice(offset, offset + numOfPageLimit);
+    if (images) {
+      const slicedImages = images.slice(0, 9);
 
-    const getImageUrl = (currentContent: Image) =>
-      `https://sol-api.esls.io/images/A1/${currentContent?.imageId}.${currentContent?.extension}`;
-
-    setModalContent(
-      <>
-        {slicedImages.map((image: Image) => {
-          return (
-            <img
-              className="image-item"
-              key={image.imageId}
-              src={getImageUrl(image)}
-              alt="이미지"
-              width={150}
-              height={140}
-              onClick={() => clickImage(getImageUrl(image))}
-            />
-          );
-        })}
-      </>
-    );
+      setModalContent(
+        <>
+          {slicedImages.map((image: Image) => {
+            return (
+              <img
+                className="image-item"
+                key={image.imageId}
+                src={getImageUrl(image)}
+                alt="이미지"
+                width={150}
+                height={140}
+                onClick={() =>
+                  clickImage(setSelectedImages, getImageUrl(image))
+                }
+              />
+            );
+          })}
+        </>
+      );
+    }
   };
 
   const handleModal = async (currTitle: string) => {

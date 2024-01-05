@@ -17,13 +17,14 @@ const View = () => {
   );
 
   /**
-   * 캔버스 내 이미지 추가 함수
+   * 캔버스 내 이미지 컴포넌트 추가 함수
    */
   const addImage = () => {
     selectedImages.map((imagePath: string) => {
       fabric.Image.fromURL(imagePath, function (img) {
         img.scaleToWidth(200);
         img.scaleToHeight(200);
+
         img.set('top', 100);
         img.set('left', 100);
 
@@ -33,8 +34,35 @@ const View = () => {
         }
       });
     });
+
+    setAddSelectedImages(false);
+    setSelectedImages([]);
   };
 
+  /**
+   * 캔버스 내 전체 컴포넌트 추가
+   */
+  useEffect(() => {
+    entireComponent.map(component => {
+      if (canvasRef.current !== null) {
+        canvasRef.current.add(component.render());
+        canvasRef.current.renderAll();
+      }
+    });
+  }, [entireComponent]);
+
+  /**
+   * 캔버스 내 이미지 컴포넌트 추가
+   */
+  useEffect(() => {
+    if (addSelectedImages === true) {
+      addImage();
+    }
+  }, [addImage, addSelectedImages]);
+
+  /**
+   * 캔버스 생성
+   */
   useEffect(() => {
     canvasRef.current = new fabric.Canvas('view-canvas', {
       width: 1008,
@@ -48,23 +76,6 @@ const View = () => {
       }
     };
   }, [canvasRef]);
-
-  useEffect(() => {
-    entireComponent.map(component => {
-      if (canvasRef.current !== null) {
-        canvasRef.current.add(component.render());
-        canvasRef.current.renderAll();
-      }
-    });
-  }, [entireComponent]);
-
-  useEffect(() => {
-    if (addSelectedImages === true) {
-      addImage();
-      setAddSelectedImages(prevAddSelectedImages => !prevAddSelectedImages);
-      setSelectedImages([]);
-    }
-  }, [addImage, addSelectedImages, setAddSelectedImages]);
 
   return <canvas id="view-canvas"></canvas>;
 };
