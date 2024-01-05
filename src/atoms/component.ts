@@ -6,9 +6,14 @@ import FabricRect from '@/components/Fabric/FabricRect';
 import FabricText from '@/components/Fabric/FabricText';
 import { atom } from 'jotai';
 
-const entireComponentAtom = atom<
-  (FabricText | FabricRect | FabricEllipse | FabricPolyLine | FabricImage)[]
->([]);
+export type EntireComponent =
+  | FabricText
+  | FabricRect
+  | FabricEllipse
+  | FabricPolyLine
+  | FabricImage;
+
+const entireComponentAtom = atom<EntireComponent[]>([]);
 const targetComponentAtom = atom([]);
 
 const isPolygonAtom = atom(false);

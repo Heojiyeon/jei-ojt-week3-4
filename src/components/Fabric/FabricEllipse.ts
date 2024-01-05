@@ -1,10 +1,12 @@
 import { fabric } from 'fabric';
+import { v4 as uuidv4 } from 'uuid';
 
 class FabricEllipse {
   private FabricEllipse: fabric.Ellipse;
 
   constructor() {
     this.FabricEllipse = new fabric.Ellipse({
+      name: uuidv4(),
       width: 100,
       height: 100,
       fill: '#ffffff',

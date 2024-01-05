@@ -1,4 +1,5 @@
 import { fabric } from 'fabric';
+import { v4 as uuidv4 } from 'uuid';
 
 type FabricImageProp = {
   imageUrl: string;
@@ -9,6 +10,7 @@ class FabricImage {
 
   constructor({ imageUrl }: FabricImageProp) {
     this.FabricImage = fabric.Image.fromURL(imageUrl, function (img) {
+      img.set('name', uuidv4());
       img.set('width', 200);
       img.set('height', 200);
       img.set('top', 10);

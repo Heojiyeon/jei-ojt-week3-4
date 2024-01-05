@@ -1,4 +1,5 @@
 import { fabric } from 'fabric';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Point {
   x: number;
@@ -14,6 +15,7 @@ class FabricPolygon {
 
   constructor({ points }: FabricPolygonProp) {
     this.FabricPolygon = new fabric.Polygon(points, {
+      name: uuidv4(),
       width: 100,
       height: 100,
       stroke: '#3c3c3c',

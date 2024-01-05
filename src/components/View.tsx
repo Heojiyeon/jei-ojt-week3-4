@@ -6,6 +6,7 @@ import {
 import { fabric } from 'fabric';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect, useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const View = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
@@ -27,6 +28,7 @@ const View = () => {
 
         img.set('top', 100);
         img.set('left', 100);
+        img.set('name', uuidv4());
 
         if (canvasRef.current !== null) {
           canvasRef.current.add(img);

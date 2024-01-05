@@ -1,4 +1,5 @@
 import { fabric } from 'fabric';
+import { v4 as uuidv4 } from 'uuid';
 
 class FabricPolyLine {
   private FabricPolyline: fabric.Polyline;
@@ -10,6 +11,7 @@ class FabricPolyLine {
         { x: 100, y: 100 },
       ],
       {
+        name: uuidv4(),
         width: 100,
         height: 100,
         stroke: '#3c3c3c',
