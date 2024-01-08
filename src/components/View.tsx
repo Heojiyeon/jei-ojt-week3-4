@@ -1,4 +1,5 @@
 import {
+  TargetComponent,
   addSelectedImagesAtom,
   entireComponentAtom,
   selectedImagesAtom,
@@ -19,6 +20,25 @@ const View = () => {
   const [addSelectedImages, setAddSelectedImages] = useAtom(
     addSelectedImagesAtom
   );
+  const [, setTargetComponent] = useAtom(targetComponentAtom);
+
+  /**
+   * 선택된 컴포넌트 핸들링
+   */
+  const addTargetComponent = (targetComponent: TargetComponent) => {
+    setTargetComponent(prevTargetComponent => [
+      ...prevTargetComponent,
+      targetComponent,
+    ]);
+  };
+
+  const deleteTargetComponent = (targetComponent: TargetComponent) => {
+    setTargetComponent(prevTargetComponent => {
+      return prevTargetComponent.filter(
+        component => component.name !== targetComponent.name
+      );
+    });
+  };
 
   if (canvasRef.current !== null) {
     canvasRef.current.on('selection:created', () => {
@@ -35,19 +55,30 @@ const View = () => {
    */
   const addImage = () => {
     selectedImages.map((imagePath: string) => {
-      fabric.Image.fromURL(imagePath, function (img) {
-        img.scaleToWidth(200);
-        img.scaleToHeight(200);
+      fabric.Image.fromURL(
+        imagePath,
+        function (img) {
+          img.scaleToWidth(200);
+          img.scaleToHeight(200);
 
-        img.set('top', 100);
-        img.set('left', 100);
-        img.set('name', uuidv4());
+          img.set('top', 100);
+          img.set('left', 100);
+          img.set('name', uuidv4());
 
-        if (canvasRef.current !== null) {
-          canvasRef.current.add(img);
-          canvasRef.current.requestRenderAll();
+          img.set('data', img.toDataURL(img.data));
+
+          img.on('selected', () => addTargetComponent(img));
+          img.on('deselected', () => deleteTargetComponent(img));
+
+          if (canvasRef.current !== null) {
+            canvasRef.current.add(img);
+            canvasRef.current.requestRenderAll();
+          }
+        },
+        {
+          crossOrigin: 'Anonymous',
         }
-      });
+      );
     });
 
     setAddSelectedImages(false);
