@@ -1,4 +1,4 @@
-import { addSelectedImagesAtom, selectedImagesAtom } from '@/atoms/component';
+import { addComponentAtom, selectedImagesAtom } from '@/atoms/component';
 import {
   isOpenModalAtom,
   modalContentAtom,
@@ -10,7 +10,7 @@ import Pagination from '@/components/Pagination';
 import Toolbar from '@/components/Toolbar';
 import View from '@/components/View';
 import Modal from '@/components/common/Modal';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 const MainPage = () => {
   const modalTitle = useAtomValue(modalTitleAtom);
@@ -19,11 +19,11 @@ const MainPage = () => {
   const selectedImages = useAtomValue(selectedImagesAtom);
 
   const [isOpenModal, setIsOpenModal] = useAtom(isOpenModalAtom);
-  const [, setAddSelectedImages] = useAtom(addSelectedImagesAtom);
+  const setAddComponent = useSetAtom(addComponentAtom);
 
   const handleAddImagesButton = () => {
-    if (selectedImages.length !== 0) {
-      setAddSelectedImages(prevAddSelectedImages => !prevAddSelectedImages);
+    if (selectedImages.length !== null) {
+      setAddComponent('image');
     }
     setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
   };

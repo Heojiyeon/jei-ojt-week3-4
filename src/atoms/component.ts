@@ -20,6 +20,8 @@ export type TargetComponent =
   | fabric.Polyline
   | fabric.Rect;
 
+export type AddComponent = 'image' | 'text' | 'rect' | 'circle' | 'line';
+
 const entireComponentAtom = atom<EntireComponent[]>([]);
 const targetComponentAtom = atom<TargetComponent[]>([]);
 const choiceComponentAtom = atom<TargetComponent[]>([]);
@@ -30,6 +32,8 @@ const polygonPointsAtom = atom<Point[]>([]);
 const selectedImagesAtom = atom<string[]>([]);
 const addSelectedImagesAtom = atom(false);
 
+const addComponentAtom = atom<AddComponent | null>(null);
+
 export {
   entireComponentAtom,
   isPolygonAtom,
@@ -38,4 +42,5 @@ export {
   targetComponentAtom,
   addSelectedImagesAtom,
   choiceComponentAtom,
+  addComponentAtom,
 };

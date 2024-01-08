@@ -5,7 +5,7 @@ import { numOfPageLimitAtom, pageAtom } from '@/atoms/pagination';
 import { Image } from '@/types/Image';
 import { clickImage, getImageUrl } from '@/utils/handleImage';
 import styled from '@emotion/styled';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useState } from 'react';
 
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from 'react-icons/ai';
@@ -15,9 +15,9 @@ const Pagination = () => {
   const totalNumOfImages = useAtomValue(numOfImagesAtom);
   const numOfPageLimit = useAtomValue(numOfPageLimitAtom);
 
-  const [, setPage] = useAtom(pageAtom);
-  const [, setModalContent] = useAtom(modalContentAtom);
-  const [, setSelectedImages] = useAtom(selectedImagesAtom);
+  const setPage = useSetAtom(pageAtom);
+  const setModalContent = useSetAtom(modalContentAtom);
+  const setSelectedImages = useSetAtom(selectedImagesAtom);
 
   const [startPageNumber, setStartPageNumber] = useState(0);
 

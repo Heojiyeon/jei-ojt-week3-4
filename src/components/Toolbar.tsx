@@ -8,21 +8,25 @@ import { FaSave } from 'react-icons/fa';
 import { FaRegClock } from 'react-icons/fa6';
 import { GiPaintBrush } from 'react-icons/gi';
 import { IoIosCheckbox } from 'react-icons/io';
-import { LuImagePlus } from 'react-icons/lu';
-import { MdPreview } from 'react-icons/md';
+import {
+  LuAlignHorizontalJustifyCenter,
+  LuAlignVerticalJustifyCenter,
+  LuImagePlus,
+} from 'react-icons/lu';
+import {
+  MdAlignHorizontalCenter,
+  MdAlignVerticalCenter,
+  MdPreview,
+} from 'react-icons/md';
 import { PiLineSegment, PiMathOperationsFill } from 'react-icons/pi';
 import { RiPaintFill } from 'react-icons/ri';
 import { TbTextIncrease } from 'react-icons/tb';
 
-import { MdAlignHorizontalCenter, MdAlignVerticalCenter } from 'react-icons/md';
-
 import { getImages } from '@/apis/image';
 import {
-  TargetComponent,
-  entireComponentAtom,
+  addComponentAtom,
   isPolygonAtom,
   selectedImagesAtom,
-  targetComponentAtom,
 } from '@/atoms/component';
 import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
 import {
@@ -32,44 +36,19 @@ import {
 } from '@/atoms/modal';
 import { Image } from '@/types/Image';
 import { clickImage, getImageUrl } from '@/utils/handleImage';
-import { useAtom } from 'jotai';
-import {
-  LuAlignHorizontalJustifyCenter,
-  LuAlignVerticalJustifyCenter,
-} from 'react-icons/lu';
-import FabricEllipse from './Fabric/FabricEllipse';
-import FabricPolyLine from './Fabric/FabricLine';
-import FabricRect from './Fabric/FabricRect';
-import FabricText from './Fabric/FabricText';
+import { useSetAtom } from 'jotai';
 
 const Toolbar = () => {
-  const [, setIsOpenModal] = useAtom(isOpenModalAtom);
-  const [, setModalTitle] = useAtom(modalTitleAtom);
-  const [, setModalContent] = useAtom(modalContentAtom);
-  const [, setNumOfImages] = useAtom(numOfImagesAtom);
-  const [, setImages] = useAtom(ImagesAtom);
-  const [, setEntireComponent] = useAtom(entireComponentAtom);
-  const [, setIsPolygon] = useAtom(isPolygonAtom);
-  const [, setSelectedImages] = useAtom(selectedImagesAtom);
-  const [, setTargetComponent] = useAtom(targetComponentAtom);
+  const setIsOpenModal = useSetAtom(isOpenModalAtom);
+  const setModalTitle = useSetAtom(modalTitleAtom);
+  const setModalContent = useSetAtom(modalContentAtom);
 
-  /**
-   * 선택된 컴포넌트 핸들링
-   */
-  const addTargetComponent = (targetComponent: TargetComponent) => {
-    setTargetComponent(prevTargetComponent => [
-      ...prevTargetComponent,
-      targetComponent,
-    ]);
-  };
+  const setImages = useSetAtom(ImagesAtom);
+  const setNumOfImages = useSetAtom(numOfImagesAtom);
+  const setSelectedImages = useSetAtom(selectedImagesAtom);
 
-  const deleteTargetComponent = (targetComponent: TargetComponent) => {
-    setTargetComponent(prevTargetComponent => {
-      return prevTargetComponent.filter(
-        component => component.name !== targetComponent.name
-      );
-    });
-  };
+  const setIsPolygon = useSetAtom(isPolygonAtom);
+  const setAddComponent = useSetAtom(addComponentAtom);
 
   /**
    * 최초 이미지 렌더링 함수
@@ -133,71 +112,19 @@ const Toolbar = () => {
         </Button>
       </GroupContainer>
       <GroupContainer id="add-component">
-        <Button
-          onClick={() => {
-            const newText = new FabricText({
-              addTargetComponent,
-              deleteTargetComponent,
-            });
-
-            setEntireComponent(prevEntireComponent => [
-              ...prevEntireComponent,
-              newText,
-            ]);
-          }}
-        >
+        <Button onClick={() => setAddComponent('text')}>
           {<TbTextIncrease size="1.5rem" />}
         </Button>
-        <Button
-          onClick={() => {
-            handleModal('Image List');
-          }}
-        >
+        <Button onClick={() => handleModal('Image List')}>
           {<LuImagePlus size="1.5rem" />}
         </Button>
-        <Button
-          onClick={() => {
-            const newText = new FabricRect({
-              addTargetComponent,
-              deleteTargetComponent,
-            });
-
-            setEntireComponent(prevEntireComponent => [
-              ...prevEntireComponent,
-              newText,
-            ]);
-          }}
-        >
+        <Button onClick={() => setAddComponent('rect')}>
           {<BiRectangle size="1.5rem" />}
         </Button>
-        <Button
-          onClick={() => {
-            const newEllipse = new FabricEllipse({
-              addTargetComponent,
-              deleteTargetComponent,
-            });
-
-            setEntireComponent(prevEntireComponent => [
-              ...prevEntireComponent,
-              newEllipse,
-            ]);
-          }}
-        >
+        <Button onClick={() => setAddComponent('circle')}>
           {<BiCircle size="1.5rem" />}
         </Button>
-        <Button
-          onClick={() => {
-            const newPolyLine = new FabricPolyLine({
-              addTargetComponent,
-              deleteTargetComponent,
-            });
-
-            setEntireComponent(prevEntireComponent => [
-              ...prevEntireComponent,
-              newPolyLine,
-            ]);
-          }}
-        >
+        <Button onClick={() => setAddComponent('line')}>
           {<PiLineSegment size="1.5rem" />}
         </Button>
         <Button
