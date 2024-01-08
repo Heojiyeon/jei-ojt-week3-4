@@ -1,8 +1,8 @@
 import {
   TargetComponent,
   addComponentAtom,
+  addGroupComponentAtom,
   addSelectedImagesAtom,
-  entireComponentAtom,
   selectedImagesAtom,
   targetComponentAtom,
 } from '@/atoms/component';
@@ -14,7 +14,6 @@ import { v4 as uuidv4 } from 'uuid';
 const View = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
 
-  const entireComponent = useAtomValue(entireComponentAtom);
   const targetComponent = useAtomValue(targetComponentAtom);
 
   const setTargetComponent = useSetAtom(targetComponentAtom);
@@ -24,6 +23,9 @@ const View = () => {
     addSelectedImagesAtom
   );
   const [addComponent, setAddComponent] = useAtom(addComponentAtom);
+  const [addGroupComponent, setAddGroupComponent] = useAtom(
+    addGroupComponentAtom
+  );
 
   /**
    * 선택된 컴포넌트 핸들링
@@ -42,16 +44,6 @@ const View = () => {
       );
     });
   };
-
-  if (canvasRef.current !== null) {
-    canvasRef.current.on('selection:created', () => {
-      console.log('created targetComponent', targetComponent);
-    });
-
-    canvasRef.current.on('selection:cleared', () => {
-      console.log('cleared targetComponent', targetComponent);
-    });
-  }
 
   /**
    * 캔버스 내 line 컴포넌트 추가 함수
@@ -199,17 +191,33 @@ const View = () => {
     setAddSelectedImages(false);
   };
 
+  const createGroupComponent = () => {
+    const newGroup = new fabric.Group(targetComponent, {
+      name: uuidv4(),
+      top: 10,
+      left: 10,
+    });
+
+    newGroup.set('data', newGroup.toDataURL(newGroup.data));
+
+    newGroup.on('selected', () => addTargetComponent(newGroup));
+    newGroup.on('deselected', () => deleteTargetComponent(newGroup));
+
+    if (canvasRef.current !== null) {
+      canvasRef.current.add(newGroup);
+      canvasRef.current.requestRenderAll();
+    }
+    setAddGroupComponent(false);
+  };
+
   /**
-   * 캔버스 내 전체 컴포넌트 추가
+   * 그룹 컴포넌트 생성
    */
   useEffect(() => {
-    entireComponent.map(component => {
-      if (canvasRef.current !== null) {
-        canvasRef.current.add(component.render());
-        canvasRef.current.renderAll();
-      }
-    });
-  }, [entireComponent]);
+    if (addGroupComponent) {
+      createGroupComponent();
+    }
+  }, [addGroupComponent, createGroupComponent]);
 
   /**
    * 캔버스 내 컴포넌트 추가
@@ -250,6 +258,16 @@ const View = () => {
       width: 1008,
       height: 970,
       backgroundColor: '#ffffff',
+    });
+
+    canvasRef.current.on('selection:created', () => {
+      const activeObjects = canvasRef.current?.getActiveObjects();
+
+      if (activeObjects) {
+        setTargetComponent([...activeObjects]);
+      }
+
+      console.log('active objects', activeObjects);
     });
 
     return () => {

@@ -18,7 +18,8 @@ export type TargetComponent =
   | fabric.Ellipse
   | fabric.Image
   | fabric.Polyline
-  | fabric.Rect;
+  | fabric.Rect
+  | fabric.Group;
 
 export type AddComponent = 'image' | 'text' | 'rect' | 'circle' | 'line';
 
@@ -34,6 +35,8 @@ const addSelectedImagesAtom = atom(false);
 
 const addComponentAtom = atom<AddComponent | null>(null);
 
+const addGroupComponentAtom = atom(false);
+
 export {
   entireComponentAtom,
   isPolygonAtom,
@@ -43,4 +46,5 @@ export {
   addSelectedImagesAtom,
   choiceComponentAtom,
   addComponentAtom,
+  addGroupComponentAtom,
 };

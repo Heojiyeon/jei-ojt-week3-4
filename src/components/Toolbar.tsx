@@ -25,6 +25,7 @@ import { TbTextIncrease } from 'react-icons/tb';
 import { getImages } from '@/apis/image';
 import {
   addComponentAtom,
+  addGroupComponentAtom,
   isPolygonAtom,
   selectedImagesAtom,
 } from '@/atoms/component';
@@ -42,6 +43,7 @@ const Toolbar = () => {
   const setIsOpenModal = useSetAtom(isOpenModalAtom);
   const setModalTitle = useSetAtom(modalTitleAtom);
   const setModalContent = useSetAtom(modalContentAtom);
+  const setAddGroupComponent = useSetAtom(addGroupComponentAtom);
 
   const setImages = useSetAtom(ImagesAtom);
   const setNumOfImages = useSetAtom(numOfImagesAtom);
@@ -159,7 +161,7 @@ const Toolbar = () => {
         </Button>
       </GroupContainer>
       <GroupContainer id="group-component">
-        <Text onClick={() => console.log('그룹화')} content="그룹화" />
+        <Text onClick={() => setAddGroupComponent(true)} content="그룹화" />
         <Button onClick={() => console.log('add horizontal center')}>
           {<MdAlignHorizontalCenter size="1.5rem" />}
         </Button>
