@@ -23,11 +23,13 @@ import { RiPaintFill } from 'react-icons/ri';
 import { TbTextIncrease } from 'react-icons/tb';
 
 import { getImages } from '@/apis/image';
+import { SelectedColor, selectedColorAtom } from '@/atoms/color';
 import {
   addComponentAtom,
   addGroupComponentAtom,
   isPolygonAtom,
   selectedImagesAtom,
+  targetComponentAtom,
 } from '@/atoms/component';
 import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
 import {
@@ -35,9 +37,11 @@ import {
   modalContentAtom,
   modalTitleAtom,
 } from '@/atoms/modal';
+import { COLORS } from '@/constants/colors';
 import { Image } from '@/types/Image';
 import { clickImage, getImageUrl } from '@/utils/handleImage';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
+import PopOver from './common/PopOver';
 
 const Toolbar = () => {
   const setIsOpenModal = useSetAtom(isOpenModalAtom);
@@ -51,6 +55,8 @@ const Toolbar = () => {
 
   const setIsPolygon = useSetAtom(isPolygonAtom);
   const setAddComponent = useSetAtom(addComponentAtom);
+
+  const setSlectedColor = useSetAtom(selectedColorAtom);
 
   /**
    * 최초 이미지 렌더링 함수
@@ -147,9 +153,28 @@ const Toolbar = () => {
         </Button>
       </GroupContainer>
       <GroupContainer id="add-component-style">
-        <Button onClick={() => console.log('add paint')}>
-          {<RiPaintFill size="1.5rem" />}
-        </Button>
+        <PopOver
+          trigger={<RiPaintFill size="1.5rem" />}
+          content={
+            <PaintContainer>
+              {COLORS.map(color => (
+                <ColorBoxLi
+                  key={color.id}
+                  onClick={() => setSlectedColor(color.hex as SelectedColor)}
+                >
+                  <ColorBox
+                    style={{
+                      width: 20,
+                      height: 20,
+                      backgroundColor: `${color.hex}`,
+                      borderStyle: color.id ? 'solid' : 'dashed',
+                    }}
+                  ></ColorBox>
+                </ColorBoxLi>
+              ))}
+            </PaintContainer>
+          }
+        ></PopOver>
         <Button onClick={() => console.log('add brush')}>
           {<GiPaintBrush size="1.5rem" />}
         </Button>
@@ -189,8 +214,24 @@ const ToolbarContainer = styled('div')`
 const GroupContainer = styled('div')`
   display: flex;
   align-items: center;
-  padding: 0.7rem;
   border-right: 1px solid #d4d7d7;
+`;
+
+const ColorBox = styled('div')`
+  border: 1px solid #d3d3d3;
+`;
+
+const ColorBoxLi = styled('li')`
+  list-style: none;
+  margin: 2px;
+  flex: 1;
+`;
+
+const PaintContainer = styled('ul')`
+  display: flex;
+  padding: 0;
+  flex-wrap: wrap;
+  margin: 0.2rem;
 `;
 
 export default Toolbar;

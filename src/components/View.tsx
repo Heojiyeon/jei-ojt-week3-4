@@ -1,3 +1,4 @@
+import { SelectedColor, selectedColorAtom } from '@/atoms/color';
 import {
   TargetComponent,
   addComponentAtom,
@@ -14,8 +15,6 @@ import { v4 as uuidv4 } from 'uuid';
 const View = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
 
-  const setTargetComponent = useSetAtom(targetComponentAtom);
-
   const [selectedImages, setSelectedImages] = useAtom(selectedImagesAtom);
   const [addSelectedImages, setAddSelectedImages] = useAtom(
     addSelectedImagesAtom
@@ -24,6 +23,8 @@ const View = () => {
   const [addGroupComponent, setAddGroupComponent] = useAtom(
     addGroupComponentAtom
   );
+  const setTargetComponent = useSetAtom(targetComponentAtom);
+  const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom);
 
   /**
    * 선택된 컴포넌트 핸들링
@@ -66,7 +67,7 @@ const View = () => {
     newLine.set('data', newLine.toDataURL(newLine.data));
 
     newLine.on('selected', () => addTargetComponent(newLine));
-    newLine.on('selected', () => deleteTargetComponent(newLine));
+    newLine.on('deselected', () => deleteTargetComponent(newLine));
 
     if (canvasRef.current !== null) {
       canvasRef.current.add(newLine);
@@ -94,7 +95,7 @@ const View = () => {
     newCircle.set('data', newCircle.toDataURL(newCircle.data));
 
     newCircle.on('selected', () => addTargetComponent(newCircle));
-    newCircle.on('selected', () => deleteTargetComponent(newCircle));
+    newCircle.on('deselected', () => deleteTargetComponent(newCircle));
 
     if (canvasRef.current !== null) {
       canvasRef.current.add(newCircle);
@@ -121,7 +122,7 @@ const View = () => {
     newRect.set('data', newRect.toDataURL(newRect));
 
     newRect.on('selected', () => addTargetComponent(newRect));
-    newRect.on('selected', () => deleteTargetComponent(newRect));
+    newRect.on('deselected', () => deleteTargetComponent(newRect));
 
     if (canvasRef.current !== null) {
       canvasRef.current.add(newRect);
@@ -148,7 +149,7 @@ const View = () => {
     newText.set('data', newText.toDataURL(newText.data));
 
     newText.on('selected', () => addTargetComponent(newText));
-    newText.on('selected', () => deleteTargetComponent(newText));
+    newText.on('deselected', () => deleteTargetComponent(newText));
 
     if (canvasRef.current !== null) {
       canvasRef.current.add(newText);
@@ -259,6 +260,24 @@ const View = () => {
   }, [addComponent, addSelectedImages]);
 
   /**
+   * 스타일 변경
+   */
+  useEffect(() => {
+    if (selectedColor) {
+      if (canvasRef.current !== null) {
+        const activeObjects = canvasRef.current?.getActiveObjects();
+
+        activeObjects.map(object =>
+          object.set('fill', selectedColor as SelectedColor)
+        );
+
+        canvasRef.current.renderAll();
+      }
+      setSelectedColor('');
+    }
+  }, [selectedColor, canvasRef]);
+
+  /**
    * 캔버스 생성
    */
   useEffect(() => {
@@ -267,16 +286,6 @@ const View = () => {
       height: 970,
       backgroundColor: '#ffffff',
     });
-
-    // 캔버스 내 selection 생성
-    canvasRef.current.on('selection:created', () => {
-      const activeObjects = canvasRef.current?.getActiveObjects();
-
-      if (activeObjects) {
-        setTargetComponent([...activeObjects]);
-      }
-    });
-
     // 캔버스 내 객체 변경 시 데이터 변경
     canvasRef.current.on('object:modified', () => {
       const activeObjects = canvasRef.current?.getActiveObjects();

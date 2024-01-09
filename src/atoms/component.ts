@@ -19,7 +19,8 @@ export type TargetComponent =
   | fabric.Image
   | fabric.Polyline
   | fabric.Rect
-  | fabric.Group;
+  | fabric.Group
+  | fabric.ActiveSelection;
 
 export type AddComponent = 'image' | 'text' | 'rect' | 'circle' | 'line';
 
@@ -38,13 +39,13 @@ const addComponentAtom = atom<AddComponent | null>(null);
 const addGroupComponentAtom = atom(false);
 
 export {
+  addComponentAtom,
+  addGroupComponentAtom,
+  addSelectedImagesAtom,
+  choiceComponentAtom,
   entireComponentAtom,
   isPolygonAtom,
   polygonPointsAtom,
   selectedImagesAtom,
   targetComponentAtom,
-  addSelectedImagesAtom,
-  choiceComponentAtom,
-  addComponentAtom,
-  addGroupComponentAtom,
 };
