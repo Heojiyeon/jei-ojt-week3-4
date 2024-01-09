@@ -23,13 +23,17 @@ import { RiPaintFill } from 'react-icons/ri';
 import { TbTextIncrease } from 'react-icons/tb';
 
 import { getImages } from '@/apis/image';
-import { SelectedColor, selectedColorAtom } from '@/atoms/color';
+import {
+  SelectedColor,
+  TypeOfPaint,
+  selectedColorAtom,
+  typeOfPaintAtom,
+} from '@/atoms/color';
 import {
   addComponentAtom,
   addGroupComponentAtom,
   isPolygonAtom,
   selectedImagesAtom,
-  targetComponentAtom,
 } from '@/atoms/component';
 import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
 import {
@@ -56,7 +60,16 @@ const Toolbar = () => {
   const setIsPolygon = useSetAtom(isPolygonAtom);
   const setAddComponent = useSetAtom(addComponentAtom);
 
-  const setSlectedColor = useSetAtom(selectedColorAtom);
+  const setSelectedColor = useSetAtom(selectedColorAtom);
+  const [typeOfPaint, setTypeOfPaint] = useAtom(typeOfPaintAtom);
+
+  /**
+   * 스타일링 함수
+   */
+  const handleStyle = (currentType: string, currentColor: string) => {
+    setTypeOfPaint(currentType as TypeOfPaint);
+    setSelectedColor(currentColor as SelectedColor);
+  };
 
   /**
    * 최초 이미지 렌더링 함수
@@ -160,7 +173,9 @@ const Toolbar = () => {
               {COLORS.map(color => (
                 <ColorBoxLi
                   key={color.id}
-                  onClick={() => setSlectedColor(color.hex as SelectedColor)}
+                  onClick={() =>
+                    handleStyle('fill', color.hex as SelectedColor)
+                  }
                 >
                   <ColorBox
                     style={{
@@ -175,9 +190,30 @@ const Toolbar = () => {
             </PaintContainer>
           }
         ></PopOver>
-        <Button onClick={() => console.log('add brush')}>
-          {<GiPaintBrush size="1.5rem" />}
-        </Button>
+        <PopOver
+          trigger={<GiPaintBrush size="1.5rem" />}
+          content={
+            <PaintContainer>
+              {COLORS.map(color => (
+                <ColorBoxLi
+                  key={color.id}
+                  onClick={() =>
+                    handleStyle('border', color.hex as SelectedColor)
+                  }
+                >
+                  <ColorBox
+                    style={{
+                      width: 20,
+                      height: 20,
+                      backgroundColor: `${color.hex}`,
+                      borderStyle: color.id ? 'solid' : 'dashed',
+                    }}
+                  ></ColorBox>
+                </ColorBoxLi>
+              ))}
+            </PaintContainer>
+          }
+        ></PopOver>
         <Button onClick={() => console.log('add border')}>
           {<BsBorderWidth size="1.5rem" />}
         </Button>

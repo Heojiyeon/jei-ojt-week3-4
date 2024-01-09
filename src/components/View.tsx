@@ -1,4 +1,8 @@
-import { SelectedColor, selectedColorAtom } from '@/atoms/color';
+import {
+  SelectedColor,
+  selectedColorAtom,
+  typeOfPaintAtom,
+} from '@/atoms/color';
 import {
   TargetComponent,
   addComponentAtom,
@@ -8,7 +12,7 @@ import {
   targetComponentAtom,
 } from '@/atoms/component';
 import fabric from '@/controller/fabric';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -25,6 +29,8 @@ const View = () => {
   );
   const setTargetComponent = useSetAtom(targetComponentAtom);
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom);
+
+  const typeOfPaint = useAtomValue(typeOfPaintAtom);
 
   /**
    * 선택된 컴포넌트 핸들링
@@ -267,15 +273,27 @@ const View = () => {
       if (canvasRef.current !== null) {
         const activeObjects = canvasRef.current?.getActiveObjects();
 
-        activeObjects.map(object =>
-          object.set('fill', selectedColor as SelectedColor)
-        );
+        switch (typeOfPaint) {
+          case 'fill':
+            activeObjects.map(object =>
+              object.set('fill', selectedColor as SelectedColor)
+            );
+            break;
+          case 'border':
+            activeObjects.map(object =>
+              object.set('stroke', selectedColor as SelectedColor)
+            );
+            break;
+
+          default:
+            break;
+        }
 
         canvasRef.current.renderAll();
       }
       setSelectedColor('');
     }
-  }, [selectedColor, canvasRef]);
+  }, [canvasRef, selectedColor, typeOfPaint]);
 
   /**
    * 캔버스 생성

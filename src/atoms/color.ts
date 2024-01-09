@@ -15,6 +15,9 @@ export type SelectedColor =
   | '#9467b9'
   | '';
 
-const selectedColorAtom = atom<SelectedColor>('');
+export type TypeOfPaint = 'fill' | 'border' | null;
 
-export { selectedColorAtom };
+const selectedColorAtom = atom<SelectedColor>('');
+const typeOfPaintAtom = atom<TypeOfPaint>(null);
+
+export { selectedColorAtom, typeOfPaintAtom };
