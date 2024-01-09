@@ -226,7 +226,7 @@ const View = () => {
         canvasRef.current.requestRenderAll();
       }
     }
-
+    setTargetComponent([]);
     setAddGroupComponent(false);
   };
 
