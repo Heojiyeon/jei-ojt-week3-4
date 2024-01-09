@@ -83,3 +83,15 @@ export const BORDER_SIZE = [
     size: 24,
   },
 ];
+
+export const BORDER_STYLE = [
+  {
+    style: 'solid',
+  },
+  {
+    style: 'dashed',
+  },
+  {
+    style: 'dotted',
+  },
+];

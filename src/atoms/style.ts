@@ -17,11 +17,24 @@ export type SelectedColor =
 
 export type SelectedBorderSize = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 24;
 
-export type TypeOfPaint = 'fill' | 'border' | 'strokeWidth' | null;
+export type SelectedBorderStyle = 'solid' | 'dashed' | 'dotted';
+
+export type TypeOfPaint =
+  | 'fill'
+  | 'border'
+  | 'strokeWidth'
+  | 'strokeStyle'
+  | null;
 
 const selectedColorAtom = atom<SelectedColor>('');
 const typeOfPaintAtom = atom<TypeOfPaint>(null);
 
 const selectedBorderSizeAtom = atom<SelectedBorderSize | null>(null);
+const selectedBorderStyleAtom = atom<SelectedBorderStyle | null>(null);
 
-export { selectedColorAtom, typeOfPaintAtom, selectedBorderSizeAtom };
+export {
+  selectedColorAtom,
+  typeOfPaintAtom,
+  selectedBorderSizeAtom,
+  selectedBorderStyleAtom,
+};

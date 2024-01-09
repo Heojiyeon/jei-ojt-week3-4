@@ -37,13 +37,15 @@ import {
 } from '@/atoms/modal';
 import {
   SelectedBorderSize,
+  SelectedBorderStyle,
   SelectedColor,
   TypeOfPaint,
   selectedBorderSizeAtom,
+  selectedBorderStyleAtom,
   selectedColorAtom,
   typeOfPaintAtom,
 } from '@/atoms/style';
-import { BORDER_SIZE, COLORS } from '@/constants/styles';
+import { BORDER_SIZE, BORDER_STYLE, COLORS } from '@/constants/styles';
 import { Image } from '@/types/Image';
 import { clickImage, getImageUrl } from '@/utils/handleImage';
 import { useSetAtom } from 'jotai';
@@ -65,6 +67,7 @@ const Toolbar = () => {
   const setSelectedColor = useSetAtom(selectedColorAtom);
   const setTypeOfPaint = useSetAtom(typeOfPaintAtom);
   const setSelectedBorderSize = useSetAtom(selectedBorderSizeAtom);
+  const setSelectedBorderStyle = useSetAtom(selectedBorderStyleAtom);
 
   /**
    * 스타일링 함수
@@ -72,7 +75,8 @@ const Toolbar = () => {
   const handleStyle = (
     currentType: string,
     currentColor?: string,
-    currentStrokeWidth?: number
+    currentStrokeWidth?: number,
+    currentStorkeStyle?: string
   ) => {
     setTypeOfPaint(currentType as TypeOfPaint);
 
@@ -80,6 +84,8 @@ const Toolbar = () => {
       setSelectedColor(currentColor as SelectedColor);
     } else if (currentStrokeWidth) {
       setSelectedBorderSize(currentStrokeWidth as SelectedBorderSize);
+    } else if (currentStorkeStyle) {
+      setSelectedBorderStyle(currentStorkeStyle as SelectedBorderStyle);
     }
   };
 
@@ -247,9 +253,30 @@ const Toolbar = () => {
             </BorderContainer>
           }
         ></PopOver>
-        <Button onClick={() => console.log('add border style')}>
-          {<BsBorderStyle size="1.5rem" />}
-        </Button>
+        <PopOver
+          trigger={<BsBorderStyle size="1.5rem" />}
+          content={
+            <BorderContainer>
+              {BORDER_STYLE.map(borderStyle => (
+                <BorderLi
+                  key={borderStyle.style}
+                  onClick={() =>
+                    handleStyle(
+                      'strokeStyle',
+                      '',
+                      undefined,
+                      borderStyle.style as SelectedBorderStyle
+                    )
+                  }
+                >
+                  <div
+                    style={{ border: `1px ${borderStyle.style} black` }}
+                  ></div>
+                </BorderLi>
+              ))}
+            </BorderContainer>
+          }
+        ></PopOver>
       </GroupContainer>
       <GroupContainer id="group-component">
         <Text onClick={() => setAddGroupComponent(true)} content="그룹화" />

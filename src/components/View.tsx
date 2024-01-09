@@ -1,11 +1,4 @@
 import {
-  SelectedBorderSize,
-  SelectedColor,
-  selectedBorderSizeAtom,
-  selectedColorAtom,
-  typeOfPaintAtom,
-} from '@/atoms/style';
-import {
   TargetComponent,
   addComponentAtom,
   addGroupComponentAtom,
@@ -13,6 +6,14 @@ import {
   selectedImagesAtom,
   targetComponentAtom,
 } from '@/atoms/component';
+import {
+  SelectedBorderSize,
+  SelectedColor,
+  selectedBorderSizeAtom,
+  selectedBorderStyleAtom,
+  selectedColorAtom,
+  typeOfPaintAtom,
+} from '@/atoms/style';
 import fabric from '@/controller/fabric';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
@@ -34,6 +35,7 @@ const View = () => {
 
   const [typeOfPaint, setTypeOfPaint] = useAtom(typeOfPaintAtom);
   const selectedBorderSize = useAtomValue(selectedBorderSizeAtom);
+  const selectedBorderStyle = useAtomValue(selectedBorderStyleAtom);
 
   /**
    * 선택된 컴포넌트 핸들링
@@ -272,7 +274,7 @@ const View = () => {
    * 스타일 변경
    */
   useEffect(() => {
-    if (selectedColor || selectedBorderSize) {
+    if (selectedColor || selectedBorderSize || selectedBorderStyle) {
       if (canvasRef.current !== null) {
         const activeObjects = canvasRef.current?.getActiveObjects();
 
@@ -294,6 +296,26 @@ const View = () => {
                 'strokeWidth',
                 selectedBorderSize as SelectedBorderSize
               );
+              return object;
+            });
+            break;
+          case 'strokeStyle':
+            let dashArray: number[] = [];
+
+            switch (selectedBorderStyle) {
+              case 'solid':
+                dashArray = [];
+                break;
+              case 'dashed':
+                dashArray = [5, 5];
+                break;
+              case 'dotted':
+                dashArray = [1, 3];
+                break;
+            }
+
+            activeObjects.map(object => {
+              object.set('strokeDashArray', dashArray);
               return object;
             });
             break;
