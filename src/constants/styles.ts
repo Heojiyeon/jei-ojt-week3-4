@@ -56,3 +56,30 @@ export const COLORS = [
     hex: '',
   },
 ];
+
+export const BORDER_SIZE = [
+  {
+    size: 1,
+  },
+  {
+    size: 2,
+  },
+  {
+    size: 3,
+  },
+  {
+    size: 4,
+  },
+  {
+    size: 8,
+  },
+  {
+    size: 12,
+  },
+  {
+    size: 16,
+  },
+  {
+    size: 24,
+  },
+];

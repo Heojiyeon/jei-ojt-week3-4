@@ -15,9 +15,13 @@ export type SelectedColor =
   | '#9467b9'
   | '';
 
-export type TypeOfPaint = 'fill' | 'border' | null;
+export type SelectedBorderSize = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 24;
+
+export type TypeOfPaint = 'fill' | 'border' | 'strokeWidth' | null;
 
 const selectedColorAtom = atom<SelectedColor>('');
 const typeOfPaintAtom = atom<TypeOfPaint>(null);
 
-export { selectedColorAtom, typeOfPaintAtom };
+const selectedBorderSizeAtom = atom<SelectedBorderSize | null>(null);
+
+export { selectedColorAtom, typeOfPaintAtom, selectedBorderSizeAtom };

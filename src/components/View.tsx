@@ -1,8 +1,10 @@
 import {
+  SelectedBorderSize,
   SelectedColor,
+  selectedBorderSizeAtom,
   selectedColorAtom,
   typeOfPaintAtom,
-} from '@/atoms/color';
+} from '@/atoms/style';
 import {
   TargetComponent,
   addComponentAtom,
@@ -30,7 +32,8 @@ const View = () => {
   const setTargetComponent = useSetAtom(targetComponentAtom);
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom);
 
-  const typeOfPaint = useAtomValue(typeOfPaintAtom);
+  const [typeOfPaint, setTypeOfPaint] = useAtom(typeOfPaintAtom);
+  const selectedBorderSize = useAtomValue(selectedBorderSizeAtom);
 
   /**
    * 선택된 컴포넌트 핸들링
@@ -269,7 +272,7 @@ const View = () => {
    * 스타일 변경
    */
   useEffect(() => {
-    if (selectedColor) {
+    if (selectedColor || selectedBorderSize) {
       if (canvasRef.current !== null) {
         const activeObjects = canvasRef.current?.getActiveObjects();
 
@@ -284,16 +287,26 @@ const View = () => {
               object.set('stroke', selectedColor as SelectedColor)
             );
             break;
+          case 'strokeWidth':
+            activeObjects.map(object => {
+              object.set('strokeUniform', true);
+              object.set(
+                'strokeWidth',
+                selectedBorderSize as SelectedBorderSize
+              );
+              return object;
+            });
+            break;
 
           default:
             break;
         }
-
         canvasRef.current.renderAll();
       }
+      setTypeOfPaint(null);
       setSelectedColor('');
     }
-  }, [canvasRef, selectedColor, typeOfPaint]);
+  }, [canvasRef, selectedColor, typeOfPaint, selectedBorderSize]);
 
   /**
    * 캔버스 생성

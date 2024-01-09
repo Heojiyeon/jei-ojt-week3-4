@@ -24,12 +24,6 @@ import { TbTextIncrease } from 'react-icons/tb';
 
 import { getImages } from '@/apis/image';
 import {
-  SelectedColor,
-  TypeOfPaint,
-  selectedColorAtom,
-  typeOfPaintAtom,
-} from '@/atoms/color';
-import {
   addComponentAtom,
   addGroupComponentAtom,
   isPolygonAtom,
@@ -41,10 +35,18 @@ import {
   modalContentAtom,
   modalTitleAtom,
 } from '@/atoms/modal';
-import { COLORS } from '@/constants/colors';
+import {
+  SelectedBorderSize,
+  SelectedColor,
+  TypeOfPaint,
+  selectedBorderSizeAtom,
+  selectedColorAtom,
+  typeOfPaintAtom,
+} from '@/atoms/style';
+import { BORDER_SIZE, COLORS } from '@/constants/styles';
 import { Image } from '@/types/Image';
 import { clickImage, getImageUrl } from '@/utils/handleImage';
-import { useAtom, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import PopOver from './common/PopOver';
 
 const Toolbar = () => {
@@ -61,14 +63,24 @@ const Toolbar = () => {
   const setAddComponent = useSetAtom(addComponentAtom);
 
   const setSelectedColor = useSetAtom(selectedColorAtom);
-  const [typeOfPaint, setTypeOfPaint] = useAtom(typeOfPaintAtom);
+  const setTypeOfPaint = useSetAtom(typeOfPaintAtom);
+  const setSelectedBorderSize = useSetAtom(selectedBorderSizeAtom);
 
   /**
    * 스타일링 함수
    */
-  const handleStyle = (currentType: string, currentColor: string) => {
+  const handleStyle = (
+    currentType: string,
+    currentColor?: string,
+    currentStrokeWidth?: number
+  ) => {
     setTypeOfPaint(currentType as TypeOfPaint);
-    setSelectedColor(currentColor as SelectedColor);
+
+    if (currentColor) {
+      setSelectedColor(currentColor as SelectedColor);
+    } else if (currentStrokeWidth) {
+      setSelectedBorderSize(currentStrokeWidth as SelectedBorderSize);
+    }
   };
 
   /**
@@ -214,9 +226,27 @@ const Toolbar = () => {
             </PaintContainer>
           }
         ></PopOver>
-        <Button onClick={() => console.log('add border')}>
-          {<BsBorderWidth size="1.5rem" />}
-        </Button>
+        <PopOver
+          trigger={<BsBorderWidth size="1.5rem" />}
+          content={
+            <BorderContainer>
+              {BORDER_SIZE.map(borderSize => (
+                <BorderLi
+                  key={borderSize.size}
+                  onClick={() =>
+                    handleStyle(
+                      'strokeWidth',
+                      '',
+                      borderSize.size as SelectedBorderSize
+                    )
+                  }
+                >
+                  {borderSize.size}px
+                </BorderLi>
+              ))}
+            </BorderContainer>
+          }
+        ></PopOver>
         <Button onClick={() => console.log('add border style')}>
           {<BsBorderStyle size="1.5rem" />}
         </Button>
@@ -268,6 +298,19 @@ const PaintContainer = styled('ul')`
   padding: 0;
   flex-wrap: wrap;
   margin: 0.2rem;
+`;
+
+const BorderContainer = styled('ul')`
+  padding: 0;
+`;
+
+const BorderLi = styled('li')`
+  list-style: none;
+  padding: 0.5rem;
+  margin: 0.5rem;
+  &:hover {
+    background-color: #f2f5f5;
+  }
 `;
 
 export default Toolbar;
