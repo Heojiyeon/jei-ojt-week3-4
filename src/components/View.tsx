@@ -7,14 +7,12 @@ import {
   targetComponentAtom,
 } from '@/atoms/component';
 import fabric from '@/controller/fabric';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 const View = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
-
-  const targetComponent = useAtomValue(targetComponentAtom);
 
   const setTargetComponent = useSetAtom(targetComponentAtom);
 
@@ -196,27 +194,25 @@ const View = () => {
   };
 
   const createGroupComponent = () => {
-    const newGroup = new fabric.Group([...targetComponent], {
-      name: uuidv4(),
-      originX: 'center',
-      originY: 'center',
-    });
-
-    newGroup.set('data', newGroup.toDataURL(newGroup.data));
-
-    newGroup.on('selected', () => addTargetComponent(newGroup));
-    newGroup.on('deselected', () => deleteTargetComponent(newGroup));
-
     if (canvasRef.current !== null) {
-      // 그룹화에 사용된 컴포넌트 제거
-      canvasRef.current.getActiveObjects().forEach(object => {
-        canvasRef.current?.remove(object);
-      });
+      // 그룹 컴포넌트 생성
+      const activatedObjects = canvasRef.current.getActiveObject();
 
-      // 생성한 그룹 컴포넌트 추가
-      canvasRef.current.add(newGroup);
-      newGroup.setCoords(false);
-      canvasRef.current.renderAll();
+      // 그룹화 생성
+      if (activatedObjects instanceof fabric.ActiveSelection) {
+        const createdGroup = activatedObjects.toGroup();
+
+        createdGroup.set('name', uuidv4());
+        createdGroup.set('data', createdGroup.toDataURL(createdGroup.data));
+
+        createdGroup.on('selected', () => addTargetComponent(createdGroup));
+        createdGroup.on('deselected', () =>
+          deleteTargetComponent(createdGroup)
+        );
+
+        canvasRef.current.add(createdGroup);
+        canvasRef.current.requestRenderAll();
+      }
     }
 
     setAddGroupComponent(false);
@@ -227,7 +223,6 @@ const View = () => {
    */
   useEffect(() => {
     if (addGroupComponent) {
-      console.log('target component', targetComponent);
       createGroupComponent();
     }
   }, [addGroupComponent, createGroupComponent]);
@@ -280,8 +275,6 @@ const View = () => {
       if (activeObjects) {
         setTargetComponent([...activeObjects]);
       }
-
-      console.log('active objects', activeObjects);
     });
 
     // 캔버스 내 객체 변경 시 데이터 변경
