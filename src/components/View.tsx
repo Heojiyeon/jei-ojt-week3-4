@@ -280,14 +280,19 @@ const View = () => {
 
         switch (typeOfPaint) {
           case 'fill':
-            activeObjects.map(object =>
-              object.set('fill', selectedColor as SelectedColor)
-            );
+            activeObjects.map(object => {
+              object.set('fill', selectedColor as SelectedColor);
+              object.set('data', object.toDataURL(object.data));
+              return object;
+            });
             break;
           case 'border':
-            activeObjects.map(object =>
-              object.set('stroke', selectedColor as SelectedColor)
-            );
+            activeObjects.map(object => {
+              object.set('stroke', selectedColor as SelectedColor);
+
+              object.set('data', object.toDataURL(object.data));
+              return object;
+            });
             break;
           case 'strokeWidth':
             activeObjects.map(object => {
@@ -296,6 +301,7 @@ const View = () => {
                 'strokeWidth',
                 selectedBorderSize as SelectedBorderSize
               );
+              object.set('data', object.toDataURL(object.data));
               return object;
             });
             break;
@@ -316,6 +322,7 @@ const View = () => {
 
             activeObjects.map(object => {
               object.set('strokeDashArray', dashArray);
+              object.set('data', object.toDataURL(object.data));
               return object;
             });
             break;
