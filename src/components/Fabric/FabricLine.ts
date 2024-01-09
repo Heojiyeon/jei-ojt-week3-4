@@ -1,5 +1,5 @@
 import { TargetComponent } from '@/atoms/component';
-import { fabric } from 'fabric';
+import fabric from '@/controller/fabric';
 import { v4 as uuidv4 } from 'uuid';
 
 type FabricPolyLineProp = {

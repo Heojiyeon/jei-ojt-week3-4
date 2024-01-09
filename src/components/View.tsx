@@ -6,7 +6,7 @@ import {
   selectedImagesAtom,
   targetComponentAtom,
 } from '@/atoms/component';
-import { fabric } from 'fabric';
+import fabric from '@/controller/fabric';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -61,6 +61,7 @@ const View = () => {
         stroke: '#3c3c3c',
         top: 10,
         left: 10,
+        type: 'line',
       }
     );
 
@@ -90,6 +91,7 @@ const View = () => {
       left: 10,
       rx: 50,
       ry: 50,
+      type: 'circle',
     });
     newCircle.set('data', newCircle.toDataURL(newCircle.data));
 
@@ -115,6 +117,7 @@ const View = () => {
       stroke: '#3c3c3c',
       top: 10,
       left: 10,
+      type: 'rect',
     });
 
     newRect.set('data', newRect.toDataURL(newRect));
@@ -141,6 +144,7 @@ const View = () => {
       top: 10,
       left: 10,
       fontFamily: 'SUIT-Regular',
+      type: 'text',
     });
 
     newText.set('data', newText.toDataURL(newText.data));
@@ -192,10 +196,10 @@ const View = () => {
   };
 
   const createGroupComponent = () => {
-    const newGroup = new fabric.Group(targetComponent, {
+    const newGroup = new fabric.Group([...targetComponent], {
       name: uuidv4(),
-      top: 10,
-      left: 10,
+      originX: 'center',
+      originY: 'center',
     });
 
     newGroup.set('data', newGroup.toDataURL(newGroup.data));
@@ -204,9 +208,17 @@ const View = () => {
     newGroup.on('deselected', () => deleteTargetComponent(newGroup));
 
     if (canvasRef.current !== null) {
+      // 그룹화에 사용된 컴포넌트 제거
+      canvasRef.current.getActiveObjects().forEach(object => {
+        canvasRef.current?.remove(object);
+      });
+
+      // 생성한 그룹 컴포넌트 추가
       canvasRef.current.add(newGroup);
-      canvasRef.current.requestRenderAll();
+      newGroup.setCoords(false);
+      canvasRef.current.renderAll();
     }
+
     setAddGroupComponent(false);
   };
 
@@ -215,6 +227,7 @@ const View = () => {
    */
   useEffect(() => {
     if (addGroupComponent) {
+      console.log('target component', targetComponent);
       createGroupComponent();
     }
   }, [addGroupComponent, createGroupComponent]);
@@ -260,6 +273,7 @@ const View = () => {
       backgroundColor: '#ffffff',
     });
 
+    // 캔버스 내 selection 생성
     canvasRef.current.on('selection:created', () => {
       const activeObjects = canvasRef.current?.getActiveObjects();
 
@@ -268,6 +282,15 @@ const View = () => {
       }
 
       console.log('active objects', activeObjects);
+    });
+
+    // 캔버스 내 객체 변경 시 데이터 변경
+    canvasRef.current.on('object:modified', () => {
+      const activeObjects = canvasRef.current?.getActiveObjects();
+
+      activeObjects?.map(object =>
+        object.set('data', object.toDataURL(object.data))
+      );
     });
 
     return () => {
