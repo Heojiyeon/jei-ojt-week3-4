@@ -22,11 +22,17 @@ export type TargetComponent =
   | fabric.Group
   | fabric.ActiveSelection;
 
+export interface ChoiceComponent {
+  id: string | undefined;
+  choice: TargetComponent;
+  isCorrect: boolean;
+}
+
 export type AddComponent = 'image' | 'text' | 'rect' | 'circle' | 'line';
 
 const entireComponentAtom = atom<EntireComponent[]>([]);
 const targetComponentAtom = atom<TargetComponent[]>([]);
-const choiceComponentAtom = atom<TargetComponent[]>([]);
+const choiceComponentAtom = atom<ChoiceComponent[]>([]);
 
 const isPolygonAtom = atom(false);
 const polygonPointsAtom = atom<Point[]>([]);

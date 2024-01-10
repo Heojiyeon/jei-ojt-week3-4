@@ -1,21 +1,41 @@
 import { choiceComponentAtom, targetComponentAtom } from '@/atoms/component';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
-import { useState } from 'react';
 import { CiCirclePlus } from 'react-icons/ci';
 import Button from '../common/Button';
 import ChoiceOption from './ChoiceOption';
 
 const Choice = () => {
-  const [checkAddChoice, setCheckAddChoice] = useState(false);
-
   const [targetComponent, setTargetComponent] = useAtom(targetComponentAtom);
   const [choiceComponent, setChoiceComponent] = useAtom(choiceComponentAtom);
 
   /**
+   * 선택지에서 선택한 옵션을 제거하는 함수
+   */
+  const deleteOption = (taregetId: string | undefined) => {
+    setChoiceComponent(prevChoiceComponent =>
+      prevChoiceComponent.filter(component => component.id !== taregetId)
+    );
+  };
+
+  /**
    * 선택한 옵션만 checked 되도록 하는 함수
    */
-  const checkSelectedOption = (targetId: number) => {};
+  const checkCorrectOption = (targetId: string | undefined) => {
+    setChoiceComponent(prevChoiceComponent => {
+      return prevChoiceComponent.map(component =>
+        component.id === targetId
+          ? {
+              ...component,
+              isCorrect: true,
+            }
+          : {
+              ...component,
+              isCorrect: false,
+            }
+      );
+    });
+  };
 
   /**
    * 컴포넌트를 선택지에 추가하는 함수
@@ -23,10 +43,18 @@ const Choice = () => {
   const handleAddChoiceButton = () => {
     // choice 형태에 필요한 속성 추가해야 함
     if (targetComponent) {
-      setChoiceComponent(prevChoiceComponent => [
-        ...prevChoiceComponent,
-        ...targetComponent,
-      ]);
+      targetComponent.map(component => {
+        const newChoice = {
+          id: component.name,
+          choice: component,
+          isCorrect: false,
+        };
+
+        setChoiceComponent(prevChoiceComponent => [
+          ...prevChoiceComponent,
+          newChoice,
+        ]);
+      });
 
       setTargetComponent([]);
     }
@@ -39,7 +67,14 @@ const Choice = () => {
       </Button>
       <ChoiceOptionsContainer>
         {choiceComponent.map((component, index) => (
-          <ChoiceOption key={component.name} order={index} choice={component} />
+          <ChoiceOption
+            key={component.choice.name}
+            order={index}
+            choice={component.choice}
+            isCorrect={component.isCorrect}
+            checkCorrectOption={checkCorrectOption}
+            deleteOption={deleteOption}
+          />
         ))}
       </ChoiceOptionsContainer>
     </ChoiceContainer>
