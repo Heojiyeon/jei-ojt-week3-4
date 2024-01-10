@@ -26,12 +26,14 @@ import { getImages } from '@/apis/image';
 import {
   addComponentAtom,
   addGroupComponentAtom,
+  entireComponentAtom,
   isPolygonAtom,
   selectedImagesAtom,
 } from '@/atoms/component';
 import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
 import {
   isOpenModalAtom,
+  isOpenPreviewModalAtom,
   modalContentAtom,
   modalTitleAtom,
 } from '@/atoms/modal';
@@ -48,7 +50,7 @@ import {
 import { BORDER_SIZE, BORDER_STYLE, COLORS } from '@/constants/styles';
 import { Image } from '@/types/Image';
 import { clickImage, getImageUrl } from '@/utils/handleImage';
-import { useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import PopOver from './common/PopOver';
 
 const Toolbar = () => {
@@ -68,6 +70,17 @@ const Toolbar = () => {
   const setTypeOfPaint = useSetAtom(typeOfPaintAtom);
   const setSelectedBorderSize = useSetAtom(selectedBorderSizeAtom);
   const setSelectedBorderStyle = useSetAtom(selectedBorderStyleAtom);
+  const setIsOpenPreviewModal = useSetAtom(isOpenPreviewModalAtom);
+
+  const entireComponent = useAtomValue(entireComponentAtom);
+
+  const handleSaveButton = () => {
+    // 캔버스 내 전체 컴포넌트 정보 저장
+    window.localStorage.setItem(
+      'entireComponent',
+      JSON.stringify(entireComponent)
+    );
+  };
 
   /**
    * 스타일링 함수
@@ -128,24 +141,20 @@ const Toolbar = () => {
   };
 
   const handleModal = async (currTitle: string) => {
-    if (currTitle === 'Image List') {
-      handleImage();
-    }
-
-    setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
     setModalTitle(currTitle);
+
+    if (currTitle === 'Image List') {
+      setIsOpenModal(true);
+      handleImage();
+    } else {
+      setIsOpenPreviewModal(true);
+    }
   };
 
   return (
     <ToolbarContainer>
       <GroupContainer id="content-publish">
-        <Button
-          onClick={() => {
-            console.log('save');
-          }}
-        >
-          {<FaSave size="1.5rem" />}
-        </Button>
+        <Button onClick={handleSaveButton}>{<FaSave size="1.5rem" />}</Button>
         <Button onClick={() => handleModal('Preview')}>
           {<MdPreview size="1.5rem" />}
         </Button>

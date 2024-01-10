@@ -1,7 +1,11 @@
-import { isOpenModalAtom, modalTitleAtom } from '@/atoms/modal';
+import {
+  isOpenModalAtom,
+  isOpenPreviewModalAtom,
+  modalTitleAtom,
+} from '@/atoms/modal';
 import { pageAtom } from '@/atoms/pagination';
 import styled from '@emotion/styled';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { ReactNode, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -13,8 +17,9 @@ type ModalProps = {
 
 const Modal = ({ title, children }: ModalProps) => {
   const [, setIsOpenModal] = useAtom(isOpenModalAtom);
-  const [, setModalTitle] = useAtom(modalTitleAtom);
+  const [modalTitle, setModalTitle] = useAtom(modalTitleAtom);
   const [, setPage] = useAtom(pageAtom);
+  const setIsOpenPreviewModal = useSetAtom(isOpenPreviewModalAtom);
 
   const closeModal = useCallback(
     (
@@ -24,7 +29,12 @@ const Modal = ({ title, children }: ModalProps) => {
     ) => {
       e.stopPropagation();
 
-      setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
+      if (modalTitle === 'Preview') {
+        setIsOpenPreviewModal(false);
+      } else {
+        setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
+      }
+
       setModalTitle('');
       setPage(1);
     },
@@ -60,7 +70,7 @@ const BackgroundDim = styled('div')`
 
 const ModalContainer = styled('div')`
   width: 940px;
-  height: 680px;
+  height: 800px;
   position: fixed;
   top: 50%;
   left: 50%;

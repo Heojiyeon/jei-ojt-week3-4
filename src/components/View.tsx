@@ -3,6 +3,7 @@ import {
   addComponentAtom,
   addGroupComponentAtom,
   addSelectedImagesAtom,
+  entireComponentAtom,
   selectedImagesAtom,
   targetComponentAtom,
 } from '@/atoms/component';
@@ -15,6 +16,7 @@ import {
   typeOfPaintAtom,
 } from '@/atoms/style';
 import fabric from '@/controller/fabric';
+import { Ellipse, Image, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -30,12 +32,40 @@ const View = () => {
   const [addGroupComponent, setAddGroupComponent] = useAtom(
     addGroupComponentAtom
   );
-  const setTargetComponent = useSetAtom(targetComponentAtom);
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom);
-
   const [typeOfPaint, setTypeOfPaint] = useAtom(typeOfPaintAtom);
+
+  const setTargetComponent = useSetAtom(targetComponentAtom);
+  const setEntireComponent = useSetAtom(entireComponentAtom);
+
   const selectedBorderSize = useAtomValue(selectedBorderSizeAtom);
   const selectedBorderStyle = useAtomValue(selectedBorderStyleAtom);
+
+  /**
+   * 캔버스 내 변경된 컴포넌트 데이터 업데이트
+   */
+  const updateEntireComponent = (
+    currentActiveObjects: fabric.Object[] | undefined
+  ) => {
+    currentActiveObjects?.forEach(object => {
+      setEntireComponent(prevEntireComponent => {
+        prevEntireComponent.map(component => {
+          return component.name === object.name ? object : component;
+        });
+        return prevEntireComponent;
+      });
+    });
+  };
+
+  /**
+   * 캔버스 내 모든 컴포넌트 저장 함수
+   */
+  const addEntireComponent = (currentAddedComponent: TargetComponent) => {
+    setEntireComponent(prevEntireComponent => [
+      ...prevEntireComponent,
+      currentAddedComponent,
+    ]);
+  };
 
   /**
    * 선택된 컴포넌트 핸들링
@@ -58,19 +88,21 @@ const View = () => {
   /**
    * 캔버스 내 line 컴포넌트 추가 함수
    */
-  const addLineComponent = () => {
+  const addLineComponent = (data?: Polyline) => {
     const newLine = new fabric.Polyline(
-      [
-        { x: 10, y: 10 },
-        { x: 100, y: 100 },
-      ],
+      data
+        ? data.points!
+        : [
+            { x: 10, y: 10 },
+            { x: 100, y: 100 },
+          ],
       {
-        name: uuidv4(),
-        width: 100,
-        height: 100,
-        stroke: '#3c3c3c',
-        top: 10,
-        left: 10,
+        name: data ? data.name : uuidv4(),
+        width: data ? data.width : 100,
+        height: data ? data.height : 100,
+        stroke: data ? data.stroke : '#3c3c3c',
+        top: data ? data.top : 10,
+        left: data ? data.left : 10,
         type: 'line',
       }
     );
@@ -84,23 +116,25 @@ const View = () => {
       canvasRef.current.add(newLine);
       canvasRef.current.requestRenderAll();
     }
+
+    addEntireComponent(newLine);
     setAddComponent(null);
   };
 
   /**
    * 캔버스 내 Circle 컴포넌트 추가 함수
    */
-  const addCircleComponent = () => {
+  const addCircleComponent = (data?: Ellipse) => {
     const newCircle = new fabric.Ellipse({
-      name: uuidv4(),
-      width: 100,
-      height: 100,
-      fill: '#ffffff',
-      stroke: '#3c3c3c',
-      top: 10,
-      left: 10,
-      rx: 50,
-      ry: 50,
+      name: data ? data.name : uuidv4(),
+      width: data ? data.width : 100,
+      height: data ? data.height : 100,
+      fill: data ? data.fill : '#ffffff',
+      stroke: data ? data.stroke : '#3c3c3c',
+      top: data ? data.top : 10,
+      left: data ? data.left : 10,
+      rx: data ? data.rx : 50,
+      ry: data ? data.ry : 50,
       type: 'circle',
     });
     newCircle.set('data', newCircle.toDataURL(newCircle.data));
@@ -112,21 +146,23 @@ const View = () => {
       canvasRef.current.add(newCircle);
       canvasRef.current.requestRenderAll();
     }
+
+    addEntireComponent(newCircle);
     setAddComponent(null);
   };
 
   /**
    * 캔버스 내 Rect 컴포넌트 추가 함수
    */
-  const addRectComponent = () => {
+  const addRectComponent = (data?: Rect) => {
     const newRect = new fabric.Rect({
-      name: uuidv4(),
-      width: 100,
-      height: 100,
-      fill: '#ffffff',
-      stroke: '#3c3c3c',
-      top: 10,
-      left: 10,
+      name: data ? data.name : uuidv4(),
+      width: data ? data.width : 100,
+      height: data ? data.height : 100,
+      fill: data ? data.fill : '#ffffff',
+      stroke: data ? data.stroke : '#3c3c3c',
+      top: data ? data.top : 10,
+      left: data ? data.left : 10,
       type: 'rect',
     });
 
@@ -139,20 +175,22 @@ const View = () => {
       canvasRef.current.add(newRect);
       canvasRef.current.requestRenderAll();
     }
+
+    addEntireComponent(newRect);
     setAddComponent(null);
   };
 
   /**
    * 캔버스 내 텍스트 컴포넌트 추가 함수
    */
-  const addTextComponent = () => {
+  const addTextComponent = (data?: Textbox) => {
     const newText = new fabric.Textbox('Text', {
-      name: uuidv4(),
-      stroke: '#3c3c3c',
-      width: 100,
-      height: 100,
-      top: 10,
-      left: 10,
+      name: data ? data.name : uuidv4(),
+      stroke: data ? data.stroke : '#3c3c3c',
+      width: data ? data.width : 100,
+      height: data ? data.height : 100,
+      top: data ? data.top : 10,
+      left: data ? data.left : 10,
       fontFamily: 'SUIT-Regular',
       type: 'text',
     });
@@ -167,13 +205,14 @@ const View = () => {
       canvasRef.current.requestRenderAll();
     }
 
+    addEntireComponent(newText);
     setAddComponent(null);
   };
 
   /**
    * 캔버스 내 이미지 컴포넌트 추가 함수
    */
-  const addImageComponent = () => {
+  const addImageComponent = (data?: Image) => {
     selectedImages.map((imagePath: string) => {
       fabric.Image.fromURL(
         imagePath,
@@ -181,14 +220,16 @@ const View = () => {
           img.scaleToWidth(200);
           img.scaleToHeight(200);
 
-          img.set('top', 100);
-          img.set('left', 100);
-          img.set('name', uuidv4());
+          img.set('top', data ? data.top : 100);
+          img.set('left', data ? data.left : 100);
+          img.set('name', data ? data.name : uuidv4());
 
           img.set('data', img.toDataURL(img.data));
 
           img.on('selected', () => addTargetComponent(img));
           img.on('deselected', () => deleteTargetComponent(img));
+
+          addEntireComponent(img);
 
           if (canvasRef.current !== null) {
             canvasRef.current.add(img);
@@ -208,6 +249,17 @@ const View = () => {
   const createGroupComponent = () => {
     if (canvasRef.current !== null) {
       // 그룹 컴포넌트 생성
+
+      // 그룹화에 사용된 컴포넌트 제거
+      canvasRef.current.getActiveObjects().map(component => {
+        setEntireComponent(prevEntireComponent => {
+          return prevEntireComponent.filter(
+            entireComponent => entireComponent.name !== component.name
+          );
+        });
+        return component;
+      });
+
       const activatedObjects = canvasRef.current.getActiveObject();
 
       // 그룹화 생성
@@ -221,6 +273,8 @@ const View = () => {
         createdGroup.on('deselected', () =>
           deleteTargetComponent(createdGroup)
         );
+
+        addEntireComponent(createdGroup);
 
         canvasRef.current.add(createdGroup);
         canvasRef.current.requestRenderAll();
@@ -330,6 +384,7 @@ const View = () => {
           default:
             break;
         }
+        updateEntireComponent(activeObjects);
         canvasRef.current.renderAll();
       }
       setTypeOfPaint(null);
@@ -342,8 +397,8 @@ const View = () => {
    */
   useEffect(() => {
     canvasRef.current = new fabric.Canvas('view-canvas', {
-      width: 1008,
-      height: 970,
+      width: 800,
+      height: 700,
       backgroundColor: '#ffffff',
     });
     // 캔버스 내 객체 변경 시 데이터 변경
@@ -353,6 +408,8 @@ const View = () => {
       activeObjects?.map(object =>
         object.set('data', object.toDataURL(object.data))
       );
+
+      updateEntireComponent(activeObjects);
     });
 
     return () => {

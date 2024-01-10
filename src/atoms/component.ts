@@ -1,17 +1,5 @@
-import FabricEllipse from '@/components/Fabric/FabricEllipse';
-import FabricImage from '@/components/Fabric/FabricImage';
-import FabricPolyLine from '@/components/Fabric/FabricLine';
 import { Point } from '@/components/Fabric/FabricPolygon';
-import FabricRect from '@/components/Fabric/FabricRect';
-import FabricText from '@/components/Fabric/FabricText';
 import { atom } from 'jotai';
-
-export type EntireComponent =
-  | FabricText
-  | FabricRect
-  | FabricEllipse
-  | FabricPolyLine
-  | FabricImage;
 
 export type TargetComponent =
   | fabric.Text
@@ -20,6 +8,7 @@ export type TargetComponent =
   | fabric.Polyline
   | fabric.Rect
   | fabric.Group
+  | fabric.Object
   | fabric.ActiveSelection;
 
 export interface ChoiceComponent {
@@ -30,8 +19,11 @@ export interface ChoiceComponent {
 
 export type AddComponent = 'image' | 'text' | 'rect' | 'circle' | 'line';
 
-const entireComponentAtom = atom<EntireComponent[]>([]);
+// 캔버스 내 모든 컴포넌트
+const entireComponentAtom = atom<TargetComponent[]>([]);
+// 캔버스 내 활성화된 컴포넌트
 const targetComponentAtom = atom<TargetComponent[]>([]);
+// 선택지 옵션 컴포넌트
 const choiceComponentAtom = atom<ChoiceComponent[]>([]);
 
 const isPolygonAtom = atom(false);

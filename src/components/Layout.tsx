@@ -10,14 +10,12 @@ const Layout = ({ children }: LayoutProp) => {
 };
 
 const LayoutContainer = styled('div')`
-  width: 90rem;
-  height: 67.5rem;
   margin: 0 auto;
   padding: 0 1rem;
   position: relative;
   display: grid;
   grid-template-rows: 1fr 9fr;
-  grid-template-columns: 7fr 3fr;
+  grid-template-columns: 6fr 4fr;
 `;
 
 export default Layout;

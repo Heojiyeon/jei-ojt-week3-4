@@ -83,7 +83,6 @@ const Choice = () => {
 
 const ChoiceContainer = styled('div')`
   display: flex;
-  justify-content: center;
   align-items: center;
   height: 14rem;
 `;
