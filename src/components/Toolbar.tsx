@@ -77,6 +77,7 @@ const Toolbar = () => {
   const choiceComponent = useAtomValue(choiceComponentAtom);
 
   const handleSaveButton = () => {
+    window.localStorage.clear();
     // 보기 문항 정보 저장
     const alreadyExistedChoices = window.localStorage.getItem('choices');
 

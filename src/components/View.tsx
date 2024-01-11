@@ -1,4 +1,5 @@
 import {
+  SavedComponent,
   TargetComponent,
   addComponentAtom,
   addGroupComponentAtom,
@@ -61,10 +62,14 @@ const View = () => {
   ) => {
     currentActiveObjects?.forEach(object => {
       setEntireComponent(prevEntireComponent => {
-        prevEntireComponent.map(component => {
-          return component.name === object.name ? object : component;
-        });
-        return prevEntireComponent;
+        return prevEntireComponent.map(component => {
+          return component.name === object.name
+            ? {
+                name: object.name,
+                info: object,
+              }
+            : component;
+        }) as SavedComponent[];
       });
     });
   };
@@ -88,7 +93,10 @@ const View = () => {
   const addTargetComponent = (targetComponent: TargetComponent) => {
     setTargetComponent(prevTargetComponent => [
       ...prevTargetComponent,
-      targetComponent,
+      {
+        name: targetComponent.name,
+        info: targetComponent,
+      },
     ]);
   };
 
@@ -423,59 +431,77 @@ const View = () => {
     if (entireComponentData) {
       setEntireComponent(JSON.parse(entireComponentData));
 
-      JSON.parse(entireComponentData).map(
-        async (component: TargetComponent) => {
-          switch (component.type) {
-            case 'group':
-              const createdGroup = addExistedGroupComponent(
-                component as addedGroup
-              );
-              canvasRef.current?.add(createdGroup as addedGroup);
-              canvasRef.current?.requestRenderAll();
-              break;
+      JSON.parse(entireComponentData).map(async (component: SavedComponent) => {
+        switch (component.info.type) {
+          case 'group':
+            const createdGroup = addExistedGroupComponent(
+              component.info as addedGroup
+            );
+            createdGroup.set('name', component.name);
+            createdGroup.set('selectable', true);
 
-            case 'image':
-              const createdImage = await addExistedImageComponent(
-                component as addedImage
-              );
-              canvasRef.current?.add(createdImage as addedImage);
-              canvasRef.current?.requestRenderAll();
-              break;
+            canvasRef.current?.add(createdGroup as addedGroup);
+            canvasRef.current?.requestRenderAll();
+            break;
 
-            case 'text':
-              const createdText = addExistedTextComponent(component as Textbox);
-              canvasRef.current?.add(createdText as Textbox);
-              canvasRef.current?.requestRenderAll();
-              break;
+          case 'image':
+            const createdImage = (await addExistedImageComponent(
+              component.info as addedImage
+            )) as addedImage;
+            createdImage.set('name', component.name);
+            createdImage.set('selectable', true);
 
-            case 'rect':
-              const createdRect = addExistedRectComponent(component as Rect);
-              canvasRef.current?.add(createdRect as Rect);
-              canvasRef.current?.requestRenderAll();
-              break;
+            canvasRef.current?.add(createdImage as addedImage);
+            canvasRef.current?.requestRenderAll();
+            break;
 
-            case 'circle':
-              const createdCircle = addExistedCircleComponent(
-                component as Ellipse
-              );
-              canvasRef.current?.add(createdCircle as Ellipse);
-              canvasRef.current?.requestRenderAll();
-              break;
+          case 'text':
+            const createdText = addExistedTextComponent(
+              component.info as Textbox
+            );
+            createdText.set('name', component.name);
+            createdText.set('selectable', true);
 
-            case 'line':
-              const createdLine = addExistedLineComponent(
-                component as Polyline
-              );
-              canvasRef.current?.add(createdLine as Polyline);
-              canvasRef.current?.requestRenderAll();
-              break;
+            canvasRef.current?.add(createdText as Textbox);
+            canvasRef.current?.requestRenderAll();
+            break;
 
-            default:
-              break;
-          }
-          canvasRef.current?.renderAll();
+          case 'rect':
+            const createdRect = addExistedRectComponent(component.info as Rect);
+            createdRect.set('name', component.name);
+            createdRect.set('selectable', true);
+
+            canvasRef.current?.add(createdRect as Rect);
+            canvasRef.current?.requestRenderAll();
+            break;
+
+          case 'circle':
+            const createdCircle = addExistedCircleComponent(
+              component.info as Ellipse
+            );
+            createdCircle.set('name', component.name);
+            createdCircle.set('selectable', true);
+
+            canvasRef.current?.add(createdCircle as Ellipse);
+            canvasRef.current?.requestRenderAll();
+            break;
+
+          case 'line':
+            const createdLine = addExistedLineComponent(
+              component.info as Polyline
+            );
+            createdLine.set('name', component.name);
+            createdLine.set('selectable', true);
+
+            canvasRef.current?.add(createdLine as Polyline);
+            canvasRef.current?.requestRenderAll();
+            break;
+
+          default:
+            break;
         }
-      );
+        canvasRef.current?.renderAll();
+      });
     }
     // 캔버스 내 객체 변경 시 데이터 변경
     canvasRef.current.on('object:modified', () => {

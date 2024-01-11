@@ -1,4 +1,8 @@
-import { choiceComponentAtom, targetComponentAtom } from '@/atoms/component';
+import {
+  ChoiceComponent,
+  choiceComponentAtom,
+  targetComponentAtom,
+} from '@/atoms/component';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 import { CiCirclePlus } from 'react-icons/ci';
@@ -44,10 +48,10 @@ const Choice = () => {
     // choice 형태에 필요한 속성 추가해야 함
     if (targetComponent) {
       targetComponent.map(component => {
-        const newChoice = {
+        const newChoice: ChoiceComponent = {
           name: component.name,
-          choice: component,
-          data: component.data,
+          choice: component.info,
+          data: component.info.data,
           isCorrect: false,
         };
 
