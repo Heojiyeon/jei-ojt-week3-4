@@ -120,14 +120,22 @@ const MainPage = () => {
                 );
                 createdGroup.set('name', component.name);
                 createdGroup.set('selectable', false);
+                createdGroup.set('hoverCursor', 'default');
 
-                createdGroup.on('mousedown', () =>
-                  handlePreviewComponent(
-                    createdGroup.name!,
-                    createdGroup.top!,
-                    createdGroup.left!
-                  )
-                );
+                if (
+                  choiceComponent.findIndex(
+                    choice => choice.name === component.name
+                  ) !== -1
+                ) {
+                  createdGroup.on('mousedown', () =>
+                    handlePreviewComponent(
+                      createdGroup.name!,
+                      createdGroup.top!,
+                      createdGroup.left!
+                    )
+                  );
+                  createdGroup.set('hoverCursor', 'pointer');
+                }
 
                 canvasRef.current?.add(createdGroup as addedGroup);
                 canvasRef.current?.requestRenderAll();
@@ -167,9 +175,19 @@ const MainPage = () => {
                     }
 
                     img.set('selectable', false);
-                    img.on('mousedown', () =>
-                      handlePreviewComponent(img.name!, img.top!, img.left!)
-                    );
+                    img.set('hoverCursor', 'default');
+
+                    if (
+                      choiceComponent.findIndex(
+                        choice => choice.name === component.name
+                      ) !== -1
+                    ) {
+                      img.on('mousedown', () =>
+                        handlePreviewComponent(img.name!, img.top!, img.left!)
+                      );
+                      img.set('hoverCursor', 'pointer');
+                    }
+
                     canvasRef.current?.add(img as addedImage);
                     canvasRef.current?.requestRenderAll();
                   },
@@ -184,13 +202,23 @@ const MainPage = () => {
                   component.info as Textbox
                 );
                 createdText.set('name', component.name);
-                createdText.on('mousedown', () =>
-                  handlePreviewComponent(
-                    createdText.name!,
-                    createdText.top!,
-                    createdText.left!
-                  )
-                );
+                createdText.set('hoverCursor', 'default');
+
+                if (
+                  choiceComponent.findIndex(
+                    choice => choice.name === component.name
+                  ) !== -1
+                ) {
+                  createdText.on('mousedown', () =>
+                    handlePreviewComponent(
+                      createdText.name!,
+                      createdText.top!,
+                      createdText.left!
+                    )
+                  );
+                  createdText.set('hoverCursor', 'pointer');
+                }
+
                 canvasRef.current?.add(createdText as Textbox);
                 canvasRef.current?.requestRenderAll();
                 break;
@@ -201,14 +229,23 @@ const MainPage = () => {
                 );
                 createdRect.set('name', component.name);
                 createdRect.set('selectable', false);
+                createdRect.set('hoverCursor', 'default');
 
-                createdRect.on('mousedown', () =>
-                  handlePreviewComponent(
-                    createdRect.name!,
-                    createdRect.top!,
-                    createdRect.left!
-                  )
-                );
+                if (
+                  choiceComponent.findIndex(
+                    choice => choice.name === component.name
+                  ) !== -1
+                ) {
+                  createdRect.on('mousedown', () =>
+                    handlePreviewComponent(
+                      createdRect.name!,
+                      createdRect.top!,
+                      createdRect.left!
+                    )
+                  );
+                  createdRect.set('hoverCursor', 'pointer');
+                }
+
                 canvasRef.current?.add(createdRect as Rect);
                 canvasRef.current?.requestRenderAll();
                 break;
@@ -219,14 +256,23 @@ const MainPage = () => {
                 );
                 createdCircle.set('name', component.name);
                 createdCircle.set('selectable', false);
+                createdCircle.set('hoverCursor', 'default');
 
-                createdCircle.on('mousedown', () =>
-                  handlePreviewComponent(
-                    createdCircle.name!,
-                    createdCircle.top!,
-                    createdCircle.left!
-                  )
-                );
+                if (
+                  choiceComponent.findIndex(
+                    choice => choice.name === component.name
+                  ) !== -1
+                ) {
+                  createdCircle.on('mousedown', () =>
+                    handlePreviewComponent(
+                      createdCircle.name!,
+                      createdCircle.top!,
+                      createdCircle.left!
+                    )
+                  );
+                  createdCircle.set('hoverCursor', 'pointer');
+                }
+
                 canvasRef.current?.add(createdCircle as Ellipse);
                 canvasRef.current?.requestRenderAll();
                 break;
@@ -237,14 +283,23 @@ const MainPage = () => {
                 );
                 createdLine.set('name', component.name);
                 createdLine.set('selectable', false);
+                createdLine.set('hoverCursor', 'default');
 
-                createdLine.on('mousedown', () =>
-                  handlePreviewComponent(
-                    createdLine.name!,
-                    createdLine.top!,
-                    createdLine.left!
-                  )
-                );
+                if (
+                  choiceComponent.findIndex(
+                    choice => choice.name === component.name
+                  ) !== -1
+                ) {
+                  createdLine.on('mousedown', () =>
+                    handlePreviewComponent(
+                      createdLine.name!,
+                      createdLine.top!,
+                      createdLine.left!
+                    )
+                  );
+                  createdLine.set('hoverCursor', 'pointer');
+                }
+
                 canvasRef.current?.add(createdLine as Polyline);
                 canvasRef.current?.requestRenderAll();
                 break;
