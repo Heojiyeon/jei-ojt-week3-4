@@ -15,6 +15,9 @@ const TextContainer = styled('div')`
   justify-content: center;
   align-items: center;
   padding: 0.4rem;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export default Text;

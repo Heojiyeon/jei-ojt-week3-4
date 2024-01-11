@@ -6,6 +6,8 @@ import {
   choiceComponentAtom,
   selectedImagesAtom,
 } from '@/atoms/component';
+import styled from '@emotion/styled';
+
 import {
   isOpenModalAtom,
   isOpenPreviewModalAtom,
@@ -202,6 +204,8 @@ const MainPage = () => {
                   component.info as Textbox
                 );
                 createdText.set('name', component.name);
+                createdText.set('fontFamily', 'SUIT-Regular');
+                createdText.set('selectable', false);
                 createdText.set('hoverCursor', 'default');
 
                 if (
@@ -325,11 +329,13 @@ const MainPage = () => {
       {isOpenModal && (
         <Modal title={modalTitle}>
           {modalTitle === 'Image List' && (
-            <div>
+            <ModalContentContainer>
               <div id="modal-image-content">{modalContent}</div>
               <Pagination />
-              <button onClick={handleAddImagesButton}>추가</button>
-            </div>
+              <AddButtonContainer>
+                <AddButton onClick={handleAddImagesButton}>추가</AddButton>
+              </AddButtonContainer>
+            </ModalContentContainer>
           )}
         </Modal>
       )}
@@ -345,5 +351,33 @@ const MainPage = () => {
     </>
   );
 };
+
+const ModalContentContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+`;
+
+const AddButtonContainer = styled('div')`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+`;
+
+const AddButton = styled('button')`
+  background: none;
+  border: 1px solid #7286d3;
+  width: 5rem;
+  height: 2rem;
+  font-size: 1rem;
+  font-weight: semibold;
+  border-radius: 8px;
+  color: #7286d3;
+  &:hover {
+    cursor: pointer;
+    background-color: #7286d3;
+    color: #ffffff;
+    border: 1px solid #7286d3;
+  }
+`;
 
 export default MainPage;

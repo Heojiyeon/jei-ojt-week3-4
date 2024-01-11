@@ -92,6 +92,9 @@ const ModalCloseButton = styled('button')`
   margin: 4px;
   background: none;
   border: none;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const ModalContentContainer = styled('div')`

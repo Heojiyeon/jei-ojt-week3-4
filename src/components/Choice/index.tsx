@@ -91,6 +91,12 @@ const ChoiceContainer = styled('div')`
   display: flex;
   align-items: center;
   height: 14rem;
+  border-radius: 10px;
+  background-color: #ffffff;
+  width: 28rem;
+  overflow-x: auto;
+  margin: 0 2rem 0 2rem;
+  padding: 1rem;
 `;
 
 const ChoiceOptionsContainer = styled('div')`

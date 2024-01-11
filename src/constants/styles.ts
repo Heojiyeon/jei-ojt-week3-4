@@ -1,9 +1,5 @@
 export const COLORS = [
   {
-    id: 'no-color',
-    hex: '#FFFFFFFF',
-  },
-  {
     id: 'black',
     hex: '#3c3c3c',
   },
@@ -13,7 +9,7 @@ export const COLORS = [
   },
   {
     id: 'light-gray',
-    hex: '#f5f5f5',
+    hex: '#EEEEEE',
   },
   {
     id: 'white',
@@ -34,6 +30,10 @@ export const COLORS = [
   {
     id: 'yellow',
     hex: '#f7c541',
+  },
+  {
+    id: 'brown',
+    hex: '#967E76',
   },
   {
     id: 'green',

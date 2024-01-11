@@ -21,17 +21,22 @@ const ButtonContainer = styled.button`
 `;
 
 const FormatButtonContainer = css`
-  width: 6rem;
-  height: 3rem;
-  margin: 1rem;
-  border: 1px solid #0080ff;
+  width: 5rem;
+  height: 2rem;
+  border: 1px solid #ed6276;
   border-radius: 8px;
   background: none;
-  color: #0080ff;
+  color: #ed6276;
   font-size: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0 2rem 0 2rem;
+  &:hover {
+    cursor: pointer;
+    background-color: #ed6276;
+    color: #ffffff;
+  }
 `;
 
 const IconButtonContainer = css`
@@ -39,6 +44,9 @@ const IconButtonContainer = css`
   height: 3rem;
   border: none;
   background: none;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export default Button;

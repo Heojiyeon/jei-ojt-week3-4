@@ -6,9 +6,23 @@ type LayoutProp = {
 };
 
 const Layout = ({ children }: LayoutProp) => {
-  return <LayoutContainer>{children}</LayoutContainer>;
+  return (
+    <CenteredLayoutContainer>
+      <LayoutContainer>{children}</LayoutContainer>
+    </CenteredLayoutContainer>
+  );
 };
 
+const CenteredLayoutContainer = styled('div')`
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 1440px;
+`;
 const LayoutContainer = styled('div')`
   margin: 0 auto;
   padding: 0 1rem;

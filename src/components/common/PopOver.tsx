@@ -17,7 +17,7 @@ const PopOver = ({ trigger, content }: PopOverProp) => {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button style={{ border: 'none' }}>{trigger}</Button>
+        <Button style={{ border: 'none', cursor: 'pointer' }}>{trigger}</Button>
       </PopoverTrigger>
       <Portal>
         <PopoverContent

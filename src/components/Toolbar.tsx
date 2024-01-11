@@ -2,23 +2,13 @@ import styled from '@emotion/styled';
 import Button from './common/Button';
 import Text from './common/Text';
 
-import { BiCircle, BiPolygon, BiRectangle } from 'react-icons/bi';
+import { BiCircle, BiRectangle } from 'react-icons/bi';
 import { BsBorderStyle, BsBorderWidth } from 'react-icons/bs';
 import { FaSave } from 'react-icons/fa';
-import { FaRegClock } from 'react-icons/fa6';
 import { GiPaintBrush } from 'react-icons/gi';
-import { IoIosCheckbox } from 'react-icons/io';
-import {
-  LuAlignHorizontalJustifyCenter,
-  LuAlignVerticalJustifyCenter,
-  LuImagePlus,
-} from 'react-icons/lu';
-import {
-  MdAlignHorizontalCenter,
-  MdAlignVerticalCenter,
-  MdPreview,
-} from 'react-icons/md';
-import { PiLineSegment, PiMathOperationsFill } from 'react-icons/pi';
+import { LuImagePlus } from 'react-icons/lu';
+import { MdPreview } from 'react-icons/md';
+import { PiLineSegment } from 'react-icons/pi';
 import { RiPaintFill } from 'react-icons/ri';
 import { TbTextIncrease } from 'react-icons/tb';
 
@@ -28,7 +18,6 @@ import {
   addGroupComponentAtom,
   choiceComponentAtom,
   entireComponentAtom,
-  isPolygonAtom,
   selectedImagesAtom,
 } from '@/atoms/component';
 import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
@@ -64,7 +53,6 @@ const Toolbar = () => {
   const setNumOfImages = useSetAtom(numOfImagesAtom);
   const setSelectedImages = useSetAtom(selectedImagesAtom);
 
-  const setIsPolygon = useSetAtom(isPolygonAtom);
   const setAddComponent = useSetAtom(addComponentAtom);
 
   const setSelectedColor = useSetAtom(selectedColorAtom);
@@ -172,12 +160,6 @@ const Toolbar = () => {
 
   return (
     <ToolbarContainer>
-      <GroupContainer id="content-publish">
-        <Button onClick={handleSaveButton}>{<FaSave size="1.5rem" />}</Button>
-        <Button onClick={() => handleModal('Preview')}>
-          {<MdPreview size="1.5rem" />}
-        </Button>
-      </GroupContainer>
       <GroupContainer id="add-component">
         <Button onClick={() => setAddComponent('text')}>
           {<TbTextIncrease size="1.5rem" />}
@@ -193,22 +175,6 @@ const Toolbar = () => {
         </Button>
         <Button onClick={() => setAddComponent('line')}>
           {<PiLineSegment size="1.5rem" />}
-        </Button>
-        <Button
-          onClick={() => {
-            setIsPolygon(prevIsPolygon => !prevIsPolygon);
-          }}
-        >
-          {<BiPolygon size="1.5rem" />}
-        </Button>
-        <Button onClick={() => console.log('add clock')}>
-          {<FaRegClock size="1.5rem" />}
-        </Button>
-        <Button onClick={() => console.log('add formula')}>
-          {<PiMathOperationsFill size="1.5rem" />}
-        </Button>
-        <Button onClick={() => console.log('add checkBox')}>
-          {<IoIosCheckbox size="1.5rem" />}
         </Button>
       </GroupContainer>
       <GroupContainer id="add-component-style">
@@ -308,19 +274,13 @@ const Toolbar = () => {
       </GroupContainer>
       <GroupContainer id="group-component">
         <Text onClick={() => setAddGroupComponent(true)} content="그룹화" />
-        <Button onClick={() => console.log('add horizontal center')}>
-          {<MdAlignHorizontalCenter size="1.5rem" />}
-        </Button>
-        <Button onClick={() => console.log('add vertical center')}>
-          {<MdAlignVerticalCenter size="1.5rem" />}
-        </Button>
-        <Button onClick={() => console.log('add horizontal justify center')}>
-          {<LuAlignHorizontalJustifyCenter size="1.5rem" />}
-        </Button>
-        <Button onClick={() => console.log('add vertical justify center')}>
-          {<LuAlignVerticalJustifyCenter size="1.5rem" />}
-        </Button>
       </GroupContainer>
+      <PublishGroupContainer id="content-publish">
+        <Button onClick={handleSaveButton}>{<FaSave size="1.5rem" />}</Button>
+        <Button onClick={() => handleModal('Preview')}>
+          {<MdPreview size="1.5rem" />}
+        </Button>
+      </PublishGroupContainer>
     </ToolbarContainer>
   );
 };
@@ -330,6 +290,11 @@ const ToolbarContainer = styled('div')`
   margin: auto 0;
   align-items: center;
   padding: 1.2rem;
+`;
+
+const PublishGroupContainer = styled('div')`
+  display: flex;
+  align-items: center;
 `;
 
 const GroupContainer = styled('div')`
