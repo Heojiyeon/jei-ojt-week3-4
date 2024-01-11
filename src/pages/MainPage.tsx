@@ -203,6 +203,7 @@ const MainPage = () => {
                 const createdText = addExistedTextComponent(
                   component.info as Textbox
                 );
+                createdText.set('fontSize', 30);
                 createdText.set('name', component.name);
                 createdText.set('fontFamily', 'SUIT-Regular');
                 createdText.set('selectable', false);

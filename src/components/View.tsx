@@ -205,13 +205,14 @@ const View = () => {
    * 캔버스 내 텍스트 컴포넌트 추가 함수
    */
   const addTextComponent = () => {
-    const newText = new fabric.Textbox('Text', {
+    const newText = new fabric.Textbox('텍스트를 입력해주세요.', {
       name: uuidv4(),
       stroke: '#3c3c3c',
-      width: 100,
+      width: 300,
       height: 100,
       top: 10,
       left: 10,
+      fontSize: 30,
       fontFamily: 'SUIT-Regular',
       type: 'text',
     });
