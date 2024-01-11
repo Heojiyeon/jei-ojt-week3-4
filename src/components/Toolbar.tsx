@@ -76,6 +76,15 @@ const Toolbar = () => {
 
   const handleSaveButton = () => {
     // 캔버스 내 전체 컴포넌트 정보 저장
+    const alreadyExistedEntireComponent =
+      window.localStorage.getItem('entireComponent');
+
+    if (alreadyExistedEntireComponent === JSON.stringify(entireComponent)) {
+      console.log('entireComponent', entireComponent);
+      return;
+    }
+
+    // 기존에 값이 존재하는 경우
     window.localStorage.setItem(
       'entireComponent',
       JSON.stringify(entireComponent)

@@ -416,6 +416,8 @@ const View = () => {
     const entireComponentData = window.localStorage.getItem('entireComponent');
 
     if (entireComponentData) {
+      setEntireComponent(JSON.parse(entireComponentData));
+
       JSON.parse(entireComponentData).map(
         async (component: TargetComponent) => {
           switch (component.type) {
