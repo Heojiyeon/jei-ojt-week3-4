@@ -3,6 +3,8 @@ import {
   addComponentAtom,
   addGroupComponentAtom,
   addSelectedImagesAtom,
+  addedGroup,
+  addedImage,
   entireComponentAtom,
   selectedImagesAtom,
   targetComponentAtom,
@@ -16,7 +18,15 @@ import {
   typeOfPaintAtom,
 } from '@/atoms/style';
 import fabric from '@/controller/fabric';
-import { Ellipse, Image, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
+import {
+  addExistedCircleComponent,
+  addExistedGroupComponent,
+  addExistedImageComponent,
+  addExistedLineComponent,
+  addExistedRectComponent,
+  addExistedTextComponent,
+} from '@/utils/handleComponent';
+import { Ellipse, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -88,21 +98,19 @@ const View = () => {
   /**
    * 캔버스 내 line 컴포넌트 추가 함수
    */
-  const addLineComponent = (data?: Polyline) => {
+  const addLineComponent = () => {
     const newLine = new fabric.Polyline(
-      data
-        ? data.points!
-        : [
-            { x: 10, y: 10 },
-            { x: 100, y: 100 },
-          ],
+      [
+        { x: 10, y: 10 },
+        { x: 100, y: 100 },
+      ],
       {
-        name: data ? data.name : uuidv4(),
-        width: data ? data.width : 100,
-        height: data ? data.height : 100,
-        stroke: data ? data.stroke : '#3c3c3c',
-        top: data ? data.top : 10,
-        left: data ? data.left : 10,
+        name: uuidv4(),
+        width: 100,
+        height: 100,
+        stroke: '#3c3c3c',
+        top: 10,
+        left: 10,
         type: 'line',
       }
     );
@@ -124,17 +132,17 @@ const View = () => {
   /**
    * 캔버스 내 Circle 컴포넌트 추가 함수
    */
-  const addCircleComponent = (data?: Ellipse) => {
+  const addCircleComponent = () => {
     const newCircle = new fabric.Ellipse({
-      name: data ? data.name : uuidv4(),
-      width: data ? data.width : 100,
-      height: data ? data.height : 100,
-      fill: data ? data.fill : '#ffffff',
-      stroke: data ? data.stroke : '#3c3c3c',
-      top: data ? data.top : 10,
-      left: data ? data.left : 10,
-      rx: data ? data.rx : 50,
-      ry: data ? data.ry : 50,
+      name: uuidv4(),
+      width: 100,
+      height: 100,
+      fill: '#ffffff',
+      stroke: '#3c3c3c',
+      top: 10,
+      left: 10,
+      rx: 50,
+      ry: 50,
       type: 'circle',
     });
     newCircle.set('data', newCircle.toDataURL(newCircle.data));
@@ -154,15 +162,15 @@ const View = () => {
   /**
    * 캔버스 내 Rect 컴포넌트 추가 함수
    */
-  const addRectComponent = (data?: Rect) => {
+  const addRectComponent = () => {
     const newRect = new fabric.Rect({
-      name: data ? data.name : uuidv4(),
-      width: data ? data.width : 100,
-      height: data ? data.height : 100,
-      fill: data ? data.fill : '#ffffff',
-      stroke: data ? data.stroke : '#3c3c3c',
-      top: data ? data.top : 10,
-      left: data ? data.left : 10,
+      name: uuidv4(),
+      width: 100,
+      height: 100,
+      fill: '#ffffff',
+      stroke: '#3c3c3c',
+      top: 10,
+      left: 10,
       type: 'rect',
     });
 
@@ -183,14 +191,14 @@ const View = () => {
   /**
    * 캔버스 내 텍스트 컴포넌트 추가 함수
    */
-  const addTextComponent = (data?: Textbox) => {
+  const addTextComponent = () => {
     const newText = new fabric.Textbox('Text', {
-      name: data ? data.name : uuidv4(),
-      stroke: data ? data.stroke : '#3c3c3c',
-      width: data ? data.width : 100,
-      height: data ? data.height : 100,
-      top: data ? data.top : 10,
-      left: data ? data.left : 10,
+      name: uuidv4(),
+      stroke: '#3c3c3c',
+      width: 100,
+      height: 100,
+      top: 10,
+      left: 10,
       fontFamily: 'SUIT-Regular',
       type: 'text',
     });
@@ -212,7 +220,7 @@ const View = () => {
   /**
    * 캔버스 내 이미지 컴포넌트 추가 함수
    */
-  const addImageComponent = (data?: Image) => {
+  const addImageComponent = () => {
     selectedImages.map((imagePath: string) => {
       fabric.Image.fromURL(
         imagePath,
@@ -220,9 +228,9 @@ const View = () => {
           img.scaleToWidth(200);
           img.scaleToHeight(200);
 
-          img.set('top', data ? data.top : 100);
-          img.set('left', data ? data.left : 100);
-          img.set('name', data ? data.name : uuidv4());
+          img.set('top', 100);
+          img.set('left', 100);
+          img.set('name', uuidv4());
 
           img.set('data', img.toDataURL(img.data));
 
@@ -401,6 +409,67 @@ const View = () => {
       height: 700,
       backgroundColor: '#ffffff',
     });
+
+    /**
+     * 기존에 저장된 컴포넌트가 있는지 확인해서 화면에 출력
+     */
+    const entireComponentData = window.localStorage.getItem('entireComponent');
+
+    if (entireComponentData) {
+      JSON.parse(entireComponentData).map(
+        async (component: TargetComponent) => {
+          switch (component.type) {
+            case 'group':
+              const createdGroup = addExistedGroupComponent(
+                component as addedGroup
+              );
+              canvasRef.current?.add(createdGroup as addedGroup);
+              canvasRef.current?.requestRenderAll();
+              break;
+
+            case 'image':
+              const createdImage = await addExistedImageComponent(
+                component as addedImage
+              );
+              canvasRef.current?.add(createdImage as addedImage);
+              canvasRef.current?.requestRenderAll();
+              break;
+
+            case 'text':
+              const createdText = addExistedTextComponent(component as Textbox);
+              canvasRef.current?.add(createdText as Textbox);
+              canvasRef.current?.requestRenderAll();
+              break;
+
+            case 'rect':
+              const createdRect = addExistedRectComponent(component as Rect);
+              canvasRef.current?.add(createdRect as Rect);
+              canvasRef.current?.requestRenderAll();
+              break;
+
+            case 'circle':
+              const createdCircle = addExistedCircleComponent(
+                component as Ellipse
+              );
+              canvasRef.current?.add(createdCircle as Ellipse);
+              canvasRef.current?.requestRenderAll();
+              break;
+
+            case 'line':
+              const createdLine = addExistedLineComponent(
+                component as Polyline
+              );
+              canvasRef.current?.add(createdLine as Polyline);
+              canvasRef.current?.requestRenderAll();
+              break;
+
+            default:
+              break;
+          }
+          canvasRef.current?.renderAll();
+        }
+      );
+    }
     // 캔버스 내 객체 변경 시 데이터 변경
     canvasRef.current.on('object:modified', () => {
       const activeObjects = canvasRef.current?.getActiveObjects();
