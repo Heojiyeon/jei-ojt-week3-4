@@ -1,6 +1,8 @@
 import {
   TargetComponent,
   addComponentAtom,
+  addedGroup,
+  addedImage,
   selectedImagesAtom,
 } from '@/atoms/component';
 
@@ -17,13 +19,9 @@ import Toolbar from '@/components/Toolbar';
 import View from '@/components/View';
 import Modal from '@/components/common/Modal';
 import { fabric } from 'fabric';
-import { Ellipse, Image, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
+import { Ellipse, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
-
-interface addedImage extends Image {
-  src: string;
-}
 
 const MainPage = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
@@ -48,7 +46,6 @@ const MainPage = () => {
    * 캔버스 내 line 컴포넌트 추가 함수
    */
   const addLineComponent = (data: Polyline) => {
-    console.log('create line');
     const newLine = new fabric.Polyline(data?.points!, {
       width: data.width,
       height: data.height,
@@ -77,13 +74,13 @@ const MainPage = () => {
       canvasRef.current.add(newLine);
       canvasRef.current.requestRenderAll();
     }
+    return newLine;
   };
 
   /**
    * 캔버스 내 Circle 컴포넌트 추가 함수
    */
   const addCircleComponent = (data: Ellipse) => {
-    console.log('create newCircle');
     const newCircle = new fabric.Ellipse({
       selectable: false,
       width: data.width,
@@ -116,6 +113,7 @@ const MainPage = () => {
       canvasRef.current.add(newCircle);
       canvasRef.current.requestRenderAll();
     }
+    return newCircle;
   };
 
   /**
@@ -151,6 +149,7 @@ const MainPage = () => {
       canvasRef.current.add(newRect);
       canvasRef.current.requestRenderAll();
     }
+    return newRect;
   };
 
   /**
@@ -188,13 +187,14 @@ const MainPage = () => {
       canvasRef.current.add(newText);
       canvasRef.current.requestRenderAll();
     }
+    return newText;
   };
 
   /**
    * 캔버스 내 이미지 컴포넌트 추가 함수
    */
   const addImageComponent = (data: addedImage) => {
-    fabric.Image.fromURL(
+    const newImage = fabric.Image.fromURL(
       data!.src,
       function (img) {
         img.set('top', data.top);
@@ -218,11 +218,61 @@ const MainPage = () => {
           canvasRef.current.add(img);
           canvasRef.current.requestRenderAll();
         }
+
+        return img;
       },
       {
         crossOrigin: 'Anonymous',
       }
     );
+    return newImage;
+  };
+
+  const addGroupComponent = (data: addedGroup) => {
+    // objects에 따라 생성
+    const createdObjects: TargetComponent[] = [];
+
+    data.objects.map(object => {
+      switch (object.type) {
+        case 'image':
+          const newImage = addImageComponent(object as addedImage);
+          createdObjects.push(newImage);
+          break;
+
+        case 'text':
+          const newText = addTextComponent(object as Textbox);
+          createdObjects.push(newText);
+          break;
+
+        case 'rect':
+          const newRect = addRectComponent(object as Rect);
+          createdObjects.push(newRect);
+          break;
+
+        case 'circle':
+          const newCircle = addCircleComponent(object as Ellipse);
+          createdObjects.push(newCircle);
+          break;
+
+        case 'line':
+          const newLine = addLineComponent(object as Polyline);
+          createdObjects.push(newLine);
+          break;
+
+        default:
+          break;
+      }
+    });
+    // group에 추가
+    const newGroup = new fabric.Group(createdObjects, {
+      top: data.top,
+      left: data.left,
+    });
+
+    if (canvasRef.current !== null) {
+      canvasRef.current.add(newGroup);
+      canvasRef.current.renderAll();
+    }
   };
 
   useEffect(() => {
@@ -233,12 +283,20 @@ const MainPage = () => {
         backgroundColor: '#ffffff',
       });
 
+      /**
+       * 기존에 저장된 컴포넌트가 있는지 확인해서 화면에 출력
+       */
       const entireComponentData =
         window.localStorage.getItem('entireComponent');
 
       if (entireComponentData) {
         JSON.parse(entireComponentData).map((component: TargetComponent) => {
+          // console.log(typeof component, component as Group);
           switch (component.type) {
+            case 'group':
+              addGroupComponent(component as addedGroup);
+              break;
+
             case 'image':
               addImageComponent(component as addedImage);
               break;

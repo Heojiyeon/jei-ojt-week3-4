@@ -1,5 +1,18 @@
 import { Point } from '@/components/Fabric/FabricPolygon';
+import { Group, Image } from 'fabric/fabric-impl';
 import { atom } from 'jotai';
+
+export interface addedImage extends Image {
+  src: string;
+}
+export interface addedGroup extends Group {
+  top: number;
+  left: number;
+  objects: TargetComponent[];
+  width: number;
+  height: number;
+  type: 'group';
+}
 
 export type TargetComponent =
   | fabric.Text
