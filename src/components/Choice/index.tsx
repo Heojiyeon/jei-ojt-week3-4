@@ -14,7 +14,7 @@ const Choice = () => {
    */
   const deleteOption = (taregetId: string | undefined) => {
     setChoiceComponent(prevChoiceComponent =>
-      prevChoiceComponent.filter(component => component.id !== taregetId)
+      prevChoiceComponent.filter(component => component.name !== taregetId)
     );
   };
 
@@ -24,7 +24,7 @@ const Choice = () => {
   const checkCorrectOption = (targetId: string | undefined) => {
     setChoiceComponent(prevChoiceComponent => {
       return prevChoiceComponent.map(component =>
-        component.id === targetId
+        component.name === targetId
           ? {
               ...component,
               isCorrect: true,
@@ -45,8 +45,9 @@ const Choice = () => {
     if (targetComponent) {
       targetComponent.map(component => {
         const newChoice = {
-          id: component.name,
+          name: component.name,
           choice: component,
+          data: component.data,
           isCorrect: false,
         };
 
@@ -54,6 +55,8 @@ const Choice = () => {
           ...prevChoiceComponent,
           newChoice,
         ]);
+
+        console.log(newChoice);
       });
 
       setTargetComponent([]);
@@ -68,8 +71,9 @@ const Choice = () => {
       <ChoiceOptionsContainer>
         {choiceComponent.map((component, index) => (
           <ChoiceOption
-            key={component.choice.name}
+            key={component.name}
             order={index}
+            data={component.data}
             choice={component.choice}
             isCorrect={component.isCorrect}
             checkCorrectOption={checkCorrectOption}

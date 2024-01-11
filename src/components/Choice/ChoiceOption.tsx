@@ -6,6 +6,7 @@ import Button from '../common/Button';
 type ChoiceOptionProp = {
   choice: TargetComponent;
   order: number;
+  data?: string;
   isCorrect: boolean;
   checkCorrectOption: (targetId: string | undefined) => void;
   deleteOption: (targetId: string | undefined) => void;
@@ -14,6 +15,7 @@ type ChoiceOptionProp = {
 const ChoiceOption = ({
   choice,
   order,
+  data,
   isCorrect,
   checkCorrectOption,
   deleteOption,
@@ -27,7 +29,12 @@ const ChoiceOption = ({
             {<FaTrash size="1.5rem" />}
           </Button>
         </RemoveButtonContainer>
-        <img src={choice.data} alt="option-image" width={60} height={60} />
+        <img
+          src={data ? data : choice.data}
+          alt="option-image"
+          width={60}
+          height={60}
+        />
         <RadioButton
           type="radio"
           name="is-correct"

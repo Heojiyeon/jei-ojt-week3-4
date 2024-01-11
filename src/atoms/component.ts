@@ -25,7 +25,8 @@ export type TargetComponent =
   | fabric.ActiveSelection;
 
 export interface ChoiceComponent {
-  id: string | undefined;
+  name: string | undefined;
+  data: string | undefined;
   choice: TargetComponent;
   isCorrect: boolean;
 }

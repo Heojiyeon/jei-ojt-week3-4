@@ -3,6 +3,7 @@ import {
   addComponentAtom,
   addedGroup,
   addedImage,
+  choiceComponentAtom,
   selectedImagesAtom,
 } from '@/atoms/component';
 
@@ -43,12 +44,22 @@ const MainPage = () => {
   const selectedImages = useAtomValue(selectedImagesAtom);
   const setAddComponent = useSetAtom(addComponentAtom);
 
+  const setChoiceComponent = useSetAtom(choiceComponentAtom);
+
   const handleAddImagesButton = () => {
     if (selectedImages.length !== null) {
       setAddComponent('image');
     }
     setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
   };
+
+  useEffect(() => {
+    const alreadyExistedChoices = window.localStorage.getItem('choices');
+
+    if (alreadyExistedChoices) {
+      setChoiceComponent(JSON.parse(alreadyExistedChoices));
+    }
+  }, []);
 
   useEffect(() => {
     if (isOpenPreviewModal) {

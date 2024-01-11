@@ -26,6 +26,7 @@ import { getImages } from '@/apis/image';
 import {
   addComponentAtom,
   addGroupComponentAtom,
+  choiceComponentAtom,
   entireComponentAtom,
   isPolygonAtom,
   selectedImagesAtom,
@@ -73,18 +74,26 @@ const Toolbar = () => {
   const setIsOpenPreviewModal = useSetAtom(isOpenPreviewModalAtom);
 
   const entireComponent = useAtomValue(entireComponentAtom);
+  const choiceComponent = useAtomValue(choiceComponentAtom);
 
   const handleSaveButton = () => {
+    // 보기 문항 정보 저장
+    const alreadyExistedChoices = window.localStorage.getItem('choices');
+
+    if (alreadyExistedChoices === JSON.stringify(choiceComponent)) {
+      return;
+    }
+
+    window.localStorage.setItem('choices', JSON.stringify(choiceComponent));
+
     // 캔버스 내 전체 컴포넌트 정보 저장
     const alreadyExistedEntireComponent =
       window.localStorage.getItem('entireComponent');
 
     if (alreadyExistedEntireComponent === JSON.stringify(entireComponent)) {
-      console.log('entireComponent', entireComponent);
       return;
     }
 
-    // 기존에 값이 존재하는 경우
     window.localStorage.setItem(
       'entireComponent',
       JSON.stringify(entireComponent)
