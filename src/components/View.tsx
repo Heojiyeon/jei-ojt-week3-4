@@ -5,6 +5,7 @@ import {
   addSelectedImagesAtom,
   addedGroup,
   addedImage,
+  choiceComponentAtom,
   entireComponentAtom,
   selectedImagesAtom,
   targetComponentAtom,
@@ -45,8 +46,9 @@ const View = () => {
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom);
   const [typeOfPaint, setTypeOfPaint] = useAtom(typeOfPaintAtom);
 
-  const setTargetComponent = useSetAtom(targetComponentAtom);
+  const [targetComponent, setTargetComponent] = useAtom(targetComponentAtom);
   const setEntireComponent = useSetAtom(entireComponentAtom);
+  const setChoiceComponent = useSetAtom(choiceComponentAtom);
 
   const selectedBorderSize = useAtomValue(selectedBorderSizeAtom);
   const selectedBorderStyle = useAtomValue(selectedBorderStyleAtom);
@@ -489,6 +491,44 @@ const View = () => {
       }
     };
   }, [canvasRef]);
+
+  /**
+   * 캔버스 내부 및 선택지 옵션 컴포넌트 삭제
+   */
+  useEffect(() => {
+    document.onkeydown = e => {
+      if (targetComponent.length !== 0 && e.key === 'Backspace') {
+        const targets = canvasRef.current?.getActiveObjects();
+
+        targets?.map((target: TargetComponent) => {
+          if (target.type === 'group' && target instanceof fabric.Group) {
+            canvasRef.current?.remove(target);
+          }
+          canvasRef.current?.remove(target);
+
+          setChoiceComponent(prevChoiceComponent => {
+            return prevChoiceComponent.filter(
+              choiceComponent => choiceComponent.name !== target.name
+            );
+          });
+        });
+
+        canvasRef.current?.renderAll();
+
+        targetComponent.map(component => {
+          setEntireComponent(prevEntireComponent => {
+            return prevEntireComponent.filter(
+              entireComponent => entireComponent.name !== component.name
+            );
+          });
+
+          return component;
+        });
+
+        setTargetComponent([]);
+      }
+    };
+  }, [document, targetComponent]);
 
   return <canvas id="view-canvas"></canvas>;
 };

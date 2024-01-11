@@ -55,8 +55,6 @@ const Choice = () => {
           ...prevChoiceComponent,
           newChoice,
         ]);
-
-        console.log(newChoice);
       });
 
       setTargetComponent([]);
