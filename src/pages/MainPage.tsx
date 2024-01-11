@@ -1,12 +1,11 @@
 import {
-  TargetComponent,
+  SavedComponent,
   addComponentAtom,
   addedGroup,
   addedImage,
   choiceComponentAtom,
   selectedImagesAtom,
 } from '@/atoms/component';
-
 import {
   isOpenModalAtom,
   isOpenPreviewModalAtom,
@@ -22,7 +21,6 @@ import Modal from '@/components/common/Modal';
 import {
   addExistedCircleComponent,
   addExistedGroupComponent,
-  addExistedImageComponent,
   addExistedLineComponent,
   addExistedRectComponent,
   addExistedTextComponent,
@@ -44,13 +42,49 @@ const MainPage = () => {
   const selectedImages = useAtomValue(selectedImagesAtom);
   const setAddComponent = useSetAtom(addComponentAtom);
 
-  const setChoiceComponent = useSetAtom(choiceComponentAtom);
+  const [choiceComponent, setChoiceComponent] = useAtom(choiceComponentAtom);
 
   const handleAddImagesButton = () => {
     if (selectedImages.length !== null) {
       setAddComponent('image');
     }
     setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
+  };
+
+  const handlePreviewComponent = (
+    currentComponentName: string,
+    currentTop: number,
+    currentLeft: number
+  ) => {
+    const correctComponentName = choiceComponent.filter(
+      component => component.isCorrect === true
+    )[0].name;
+
+    if (correctComponentName && correctComponentName === currentComponentName) {
+      const bubbleText = new fabric.Text('정답입니다!', {
+        fontSize: 30,
+        fill: '#0000FF',
+        fontFamily: 'SUIT-Regular',
+        top: currentTop,
+        left: currentLeft,
+      });
+      canvasRef.current?.add(bubbleText);
+      setTimeout(() => {
+        canvasRef.current?.remove(bubbleText);
+      }, 500);
+    } else {
+      const bubbleText = new fabric.Text('오답입니다!', {
+        fontSize: 30,
+        fill: '#E5001A',
+        fontFamily: 'SUIT-Regular',
+        top: currentTop,
+        left: currentLeft,
+      });
+      canvasRef.current?.add(bubbleText);
+      setTimeout(() => {
+        canvasRef.current?.remove(bubbleText);
+      }, 500);
+    }
   };
 
   useEffect(() => {
@@ -67,6 +101,7 @@ const MainPage = () => {
         width: 800,
         height: 700,
         backgroundColor: '#ffffff',
+        selection: false,
       });
 
       /**
@@ -77,42 +112,120 @@ const MainPage = () => {
 
       if (entireComponentData) {
         JSON.parse(entireComponentData).map(
-          async (component: TargetComponent) => {
-            // console.log(typeof component, component as Group);
-            switch (component.type) {
+          async (component: SavedComponent) => {
+            switch (component.info.type) {
               case 'group':
                 const createdGroup = addExistedGroupComponent(
-                  component as addedGroup
+                  component.info as addedGroup
                 );
+                createdGroup.set('name', component.name);
+                createdGroup.set('selectable', false);
+
+                createdGroup.on('mousedown', () =>
+                  handlePreviewComponent(
+                    createdGroup.name!,
+                    createdGroup.top!,
+                    createdGroup.left!
+                  )
+                );
+
                 canvasRef.current?.add(createdGroup as addedGroup);
                 canvasRef.current?.requestRenderAll();
                 break;
 
               case 'image':
-                const createdImage = await addExistedImageComponent(
-                  component as addedImage
+                const {
+                  src,
+                  top,
+                  left,
+                  angle,
+                  scaleX,
+                  scaleY,
+                  strokeWidth,
+                  strokeDashArray,
+                } = component.info as addedImage;
+                fabric.Image.fromURL(
+                  src,
+                  function (img) {
+                    img.set('name', component.name);
+                    img.set('top', top);
+                    img.set('left', left);
+
+                    // 추가적인 속성에 따른 생성
+                    if (angle) {
+                      img.set('angle', angle);
+                    }
+                    if (scaleX) {
+                      img.set('scaleX', scaleX);
+                      img.set('scaleY', scaleY);
+                    }
+                    if (strokeWidth) {
+                      img.set('strokeWidth', strokeWidth);
+                    }
+                    if (strokeDashArray) {
+                      img.set('strokeDashArray', strokeDashArray);
+                    }
+
+                    img.set('selectable', false);
+                    img.on('mousedown', () =>
+                      handlePreviewComponent(img.name!, img.top!, img.left!)
+                    );
+                    canvasRef.current?.add(img as addedImage);
+                    canvasRef.current?.requestRenderAll();
+                  },
+                  {
+                    crossOrigin: 'Anonymous',
+                  }
                 );
-                canvasRef.current?.add(createdImage as addedImage);
-                canvasRef.current?.requestRenderAll();
                 break;
 
               case 'text':
                 const createdText = addExistedTextComponent(
-                  component as Textbox
+                  component.info as Textbox
+                );
+                createdText.set('name', component.name);
+                createdText.on('mousedown', () =>
+                  handlePreviewComponent(
+                    createdText.name!,
+                    createdText.top!,
+                    createdText.left!
+                  )
                 );
                 canvasRef.current?.add(createdText as Textbox);
                 canvasRef.current?.requestRenderAll();
                 break;
 
               case 'rect':
-                const createdRect = addExistedRectComponent(component as Rect);
+                const createdRect = addExistedRectComponent(
+                  component.info as Rect
+                );
+                createdRect.set('name', component.name);
+                createdRect.set('selectable', false);
+
+                createdRect.on('mousedown', () =>
+                  handlePreviewComponent(
+                    createdRect.name!,
+                    createdRect.top!,
+                    createdRect.left!
+                  )
+                );
                 canvasRef.current?.add(createdRect as Rect);
                 canvasRef.current?.requestRenderAll();
                 break;
 
               case 'circle':
                 const createdCircle = addExistedCircleComponent(
-                  component as Ellipse
+                  component.info as Ellipse
+                );
+                createdCircle.set('name', component.name);
+                createdCircle.set('selectable', false);
+
+                createdCircle.on('mousedown', () =>
+                  handlePreviewComponent(
+                    createdCircle.name!,
+                    createdCircle.top!,
+                    createdCircle.left!
+                  )
                 );
                 canvasRef.current?.add(createdCircle as Ellipse);
                 canvasRef.current?.requestRenderAll();
@@ -120,7 +233,17 @@ const MainPage = () => {
 
               case 'line':
                 const createdLine = addExistedLineComponent(
-                  component as Polyline
+                  component.info as Polyline
+                );
+                createdLine.set('name', component.name);
+                createdLine.set('selectable', false);
+
+                createdLine.on('mousedown', () =>
+                  handlePreviewComponent(
+                    createdLine.name!,
+                    createdLine.top!,
+                    createdLine.left!
+                  )
                 );
                 canvasRef.current?.add(createdLine as Polyline);
                 canvasRef.current?.requestRenderAll();

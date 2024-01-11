@@ -75,7 +75,10 @@ const View = () => {
   const addEntireComponent = (currentAddedComponent: TargetComponent) => {
     setEntireComponent(prevEntireComponent => [
       ...prevEntireComponent,
-      currentAddedComponent,
+      {
+        name: currentAddedComponent.name,
+        info: currentAddedComponent,
+      },
     ]);
   };
 

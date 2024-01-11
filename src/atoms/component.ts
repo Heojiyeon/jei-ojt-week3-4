@@ -31,10 +31,15 @@ export interface ChoiceComponent {
   isCorrect: boolean;
 }
 
+export interface SavedComponent {
+  name: string | undefined;
+  info: TargetComponent;
+}
+
 export type AddComponent = 'image' | 'text' | 'rect' | 'circle' | 'line';
 
 // 캔버스 내 모든 컴포넌트
-const entireComponentAtom = atom<TargetComponent[]>([]);
+const entireComponentAtom = atom<SavedComponent[]>([]);
 // 캔버스 내 활성화된 컴포넌트
 const targetComponentAtom = atom<TargetComponent[]>([]);
 // 선택지 옵션 컴포넌트
