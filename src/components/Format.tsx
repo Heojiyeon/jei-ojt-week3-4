@@ -2,13 +2,18 @@ import styled from '@emotion/styled';
 import Button from './common/Button';
 
 const Format = () => {
+  const handleReset = () => {
+    if (!window.localStorage.getItem('entireComponent')) {
+      return;
+    }
+    window.localStorage.clear();
+    window.location.reload();
+  };
+
   return (
     <FormatContainer>
-      <Button onClick={() => console.log('format click!')} isFormat={true}>
-        FORMAT
-      </Button>
-      <Button onClick={() => console.log('sound click!')} isFormat={true}>
-        SOUND
+      <Button onClick={handleReset} isFormat={true}>
+        RESET
       </Button>
     </FormatContainer>
   );
