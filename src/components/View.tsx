@@ -501,10 +501,20 @@ const View = () => {
         const targets = canvasRef.current?.getActiveObjects();
 
         targets?.map((target: TargetComponent) => {
-          if (target.type === 'group' && target instanceof fabric.Group) {
+          if (target.type === 'text' && target instanceof fabric.Textbox) {
+            if (!target.isEditing) {
+              canvasRef.current?.remove(target);
+            }
+            return;
+          } else if (
+            target.type === 'group' &&
+            target instanceof fabric.Group
+          ) {
             canvasRef.current?.remove(target);
           }
+
           canvasRef.current?.remove(target);
+          canvasRef.current?.renderAll();
 
           setChoiceComponent(prevChoiceComponent => {
             return prevChoiceComponent.filter(
@@ -512,8 +522,6 @@ const View = () => {
             );
           });
         });
-
-        canvasRef.current?.renderAll();
 
         targetComponent.map(component => {
           setEntireComponent(prevEntireComponent => {
