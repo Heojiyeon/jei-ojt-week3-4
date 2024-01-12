@@ -420,7 +420,7 @@ const View = () => {
   useEffect(() => {
     canvasRef.current = new fabric.Canvas('view-canvas', {
       width: 800,
-      height: 700,
+      height: 600,
       backgroundColor: '#ffffff',
     });
 

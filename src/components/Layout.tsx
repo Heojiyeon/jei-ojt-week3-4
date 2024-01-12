@@ -15,13 +15,14 @@ const Layout = ({ children }: LayoutProp) => {
 
 const CenteredLayoutContainer = styled('div')`
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 1rem;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  width: 1440px;
+  width: 1000px;
+  height: 800px;
 `;
 const LayoutContainer = styled('div')`
   margin: 0 auto;

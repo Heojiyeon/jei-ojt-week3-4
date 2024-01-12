@@ -112,6 +112,7 @@ export const addExistedTextComponent = (data: Textbox) => {
     top: data.top,
     left: data.left,
     splitByGrapheme: data.splitByGrapheme,
+    fontSize: 30,
     styles: data.styles,
     text: data.text,
     type: 'text',
