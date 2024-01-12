@@ -259,7 +259,7 @@ const View = () => {
           }
         },
         {
-          crossOrigin: 'Anonymous',
+          crossOrigin: imagePath,
         }
       );
     });

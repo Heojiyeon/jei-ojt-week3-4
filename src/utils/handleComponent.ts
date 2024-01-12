@@ -162,7 +162,7 @@ export const addExistedImageComponent = (data: addedImage) => {
         resolve(img);
       },
       {
-        crossOrigin: 'Anonymous',
+        crossOrigin: data!.src,
       }
     );
   });

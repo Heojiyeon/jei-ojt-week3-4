@@ -194,7 +194,7 @@ const MainPage = () => {
                     canvasRef.current?.requestRenderAll();
                   },
                   {
-                    crossOrigin: 'Anonymous',
+                    crossOrigin: src,
                   }
                 );
                 break;
@@ -373,6 +373,7 @@ const AddButton = styled('button')`
   font-weight: semibold;
   border-radius: 8px;
   color: #7286d3;
+  margin-right: 1rem;
   &:hover {
     cursor: pointer;
     background-color: #7286d3;
