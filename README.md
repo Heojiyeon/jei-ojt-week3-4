@@ -1,30 +1,15 @@
-# React + TypeScript + Vite
+## 재능교육 OJT 3-4주차 - 콘텐츠 저작도구 및 렌더링 엔진 📚🔎
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+### 목표
+- React와 Fabric.js를 활용한 콘텐츠 저작도구 및 렌더링 엔진 개발
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 핵심 기능
+- 캔버스 내 기본 도형, 이미지 컴포넌트 추가 및 삭제
+- 캔버스 내 컴포넌트 그룹화
+- 캔버스 내 컴포넌트 선택지 옵션 추가 및 삭제
+- 캔버스 및 선택지 옵션 정보에 따라 미리보기 확인 및 정오답 피드백 제공
+- 작업 내용 저장 시 페이지 리로딩에도 작업 내용 유지 및 추가 작업 진행
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### 핵심 화면
+![image](https://github.com/Heojiyeon/jei-ojt-week3-4/assets/33304871/1b5481a6-0b2a-4b0e-b5af-085b827cbc69)
