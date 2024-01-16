@@ -2,6 +2,7 @@ import { TargetComponent } from '@/atoms/component';
 import styled from '@emotion/styled';
 import { FaTrash } from 'react-icons/fa6';
 import Button from '../common/Button';
+import { v4 as uuidv4 } from 'uuid';
 
 type ChoiceOptionProp = {
   choice: TargetComponent;
@@ -38,7 +39,7 @@ const ChoiceOption = ({
         <RadioButton
           type="radio"
           name="is-correct"
-          id="is-correct"
+          id={`is-correct-${uuidv4()}`}
           defaultChecked={isCorrect}
           onChange={() => checkCorrectOption(choice.name)}
         />
