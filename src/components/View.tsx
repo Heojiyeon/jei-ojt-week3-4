@@ -511,7 +511,6 @@ const View = () => {
       activeObjects?.map(object =>
         object.set('data', object.toDataURL(object.data))
       );
-
       updateEntireComponent(activeObjects);
     });
 

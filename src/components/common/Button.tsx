@@ -21,8 +21,8 @@ const ButtonContainer = styled.button`
 `;
 
 const FormatButtonContainer = css`
-  width: 5rem;
-  height: 2rem;
+  width: 6rem;
+  height: 3rem;
   border: 1px solid #ed6276;
   border-radius: 8px;
   background: none;
@@ -31,7 +31,7 @@ const FormatButtonContainer = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 2rem 0 2rem;
+  margin-right: 1rem;
   &:hover {
     cursor: pointer;
     background-color: #ed6276;
