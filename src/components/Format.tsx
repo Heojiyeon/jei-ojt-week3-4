@@ -35,8 +35,15 @@ const Format = () => {
     }
   };
 
+  const showProblem = () => {
+    window.location.replace('/game');
+  };
+
   return (
     <FormatContainer>
+      <Button onClick={showProblem} isFormat={true}>
+        SHOW PROBLEM
+      </Button>
       <Button onClick={createProblem} isFormat={true}>
         CREATE PROBLEM
       </Button>

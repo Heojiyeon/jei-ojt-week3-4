@@ -11,15 +11,16 @@ import { createPortal } from 'react-dom';
 import { AiOutlineClose } from 'react-icons/ai';
 
 type ModalProps = {
-  title: string;
+  title?: string;
   children: ReactNode;
 };
 
 const Modal = ({ title, children }: ModalProps) => {
-  const [, setIsOpenModal] = useAtom(isOpenModalAtom);
-  const [modalTitle, setModalTitle] = useAtom(modalTitleAtom);
-  const [, setPage] = useAtom(pageAtom);
+  const setPage = useSetAtom(pageAtom);
+  const setIsOpenModal = useSetAtom(isOpenModalAtom);
   const setIsOpenPreviewModal = useSetAtom(isOpenPreviewModalAtom);
+
+  const [modalTitle, setModalTitle] = useAtom(modalTitleAtom);
 
   const closeModal = useCallback(
     (
@@ -49,9 +50,11 @@ const Modal = ({ title, children }: ModalProps) => {
         }}
       >
         <ModalTitle>{title}</ModalTitle>
-        <ModalCloseButton onClick={closeModal}>
-          <AiOutlineClose />
-        </ModalCloseButton>
+        {title !== '게임페이지' && (
+          <ModalCloseButton onClick={closeModal}>
+            <AiOutlineClose />
+          </ModalCloseButton>
+        )}
         <ModalContentContainer>{children}</ModalContentContainer>
       </ModalContainer>
     </BackgroundDim>,

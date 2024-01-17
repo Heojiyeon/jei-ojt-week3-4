@@ -61,3 +61,39 @@ export const createIndexedDB = ({ problems }: CreateIndexedDBProp) => {
     };
   };
 };
+
+export const getIndexedDB = () => {
+  const idxDB = window.indexedDB;
+
+  if (!idxDB) {
+    alert('indexedDB를 지원하지 않는 브라우저입니다!');
+    return;
+  }
+
+  return new Promise((resolve, reject) => {
+    const request = idxDB.open('content');
+
+    /**
+     * 저장소 내 에러 처리
+     */
+    request.onerror = e => {
+      console.error(e);
+      reject((e.target as IDBOpenDBRequest).error);
+    };
+
+    /**
+     * 트랜잭션(DB 상태 변화) 핸들링
+     */
+    request.onsuccess = () => {
+      const problemStore = request.result
+        .transaction(['problem'])
+        .objectStore('problem');
+
+      problemStore.getAll().onsuccess = e => {
+        const problems = (e.target as IDBOpenDBRequest).result;
+
+        resolve(problems);
+      };
+    };
+  });
+};
