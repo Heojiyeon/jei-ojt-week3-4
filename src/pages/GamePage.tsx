@@ -25,10 +25,13 @@ interface HandledProblem {
   choice: ChoiceOptionContent[];
 }
 
+const { VITE_TARGET_ORIGIN } = import.meta.env;
+
 const GamePage = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
 
   const [currentProblemOrder, setCurrentProblemOrder] = useState(0);
+  const [countOfCorrect, setCountOfCorrect] = useState(0);
 
   const handlePreviewComponent = (
     choiceComponent: ChoiceOptionContent[],
@@ -44,6 +47,8 @@ const GamePage = () => {
 
     // 정답인 경우
     if (correctComponentName && correctComponentName === currentComponentName) {
+      setCountOfCorrect(prevCountOfCorrect => (prevCountOfCorrect += 1));
+
       bubbleText = new fabric.Text('정답입니다!', {
         fontSize: 30,
         fill: '#0000FF',
@@ -107,10 +112,15 @@ const GamePage = () => {
     });
 
     /**
-     * 문제 생성
+     * 문제 생성∏
      */
     const handleFetchData = async () => {
       const problems = await fetchData();
+
+      if (currentProblemOrder >= problems.length) {
+        window.parent.postMessage(countOfCorrect, VITE_TARGET_ORIGIN);
+        return;
+      }
 
       const { content, choice } = problems && problems[currentProblemOrder];
 
