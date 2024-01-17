@@ -40,14 +40,14 @@ export const createIndexedDB = ({ problems }: CreateIndexedDBProp) => {
     const problemStore = transaction.objectStore('problem');
 
     problems &&
-      problems.map(problem => {
+      problems.map((problem: Problem) => {
         const modifiedProblem = {
           ...problem,
           content: JSON.stringify(problem.content),
           choice: JSON.stringify(problem.choice),
         };
 
-        problemStore.add(modifiedProblem);
+        problemStore.add(modifiedProblem, problem.id);
       });
 
     // 트랜잭션 완료
