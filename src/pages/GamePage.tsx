@@ -97,16 +97,18 @@ const GamePage = () => {
   const fetchData = async () => {
     const entireProblems: HandledProblem[] = [];
     try {
-      const problems = (await getIndexedDB({ gameType })) as Problem[];
+      if (gameType !== null) {
+        const problems = (await getIndexedDB({ gameType })) as Problem[];
 
-      problems.map((problem: Problem) => {
-        const modifiedProblem = {
-          ...problem,
-          content: JSON.parse(problem.content),
-          choice: JSON.parse(problem.choice),
-        };
-        entireProblems.push(modifiedProblem);
-      });
+        problems.map((problem: Problem) => {
+          const modifiedProblem = {
+            ...problem,
+            content: JSON.parse(problem.content),
+            choice: JSON.parse(problem.choice),
+          };
+          entireProblems.push(modifiedProblem);
+        });
+      }
     } catch (error) {
       console.error('Error getting problems:', error);
     }

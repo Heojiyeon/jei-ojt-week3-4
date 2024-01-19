@@ -9,6 +9,6 @@ export interface Problem {
 }
 
 const problemsAtom = atom<Problem[]>([]);
-const gameTypeAtom = atom<Games>('number-game');
+const gameTypeAtom = atom<Games | null>(null);
 
 export { problemsAtom, gameTypeAtom };

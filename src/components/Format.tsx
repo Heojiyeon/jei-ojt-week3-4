@@ -31,7 +31,7 @@ const Format = () => {
   };
 
   const createProblem = () => {
-    if (entireComponent) {
+    if (entireComponent && gameType !== null) {
       setProblems(prevProblems => {
         return [
           ...prevProblems,
@@ -62,17 +62,21 @@ const Format = () => {
         RESET
       </Button>
       <Select
-        placeholder={
-          gameType
-            ? gameType === 'number-game'
-              ? NUMBER_GAME
-              : SITUATION_GAME
-            : 'SELECT GAME TYPE'
-        }
+        placeholder={!gameType ? 'SELECT GAME TYPE' : ''}
         onChange={e => handleGameType(e.target.value as Games)}
       >
-        <option value="number-game">{NUMBER_GAME}</option>
-        <option value="situation-game">{SITUATION_GAME}</option>
+        <option
+          value="number-game"
+          defaultChecked={gameType === 'number-game' ? true : false}
+        >
+          {NUMBER_GAME}
+        </option>
+        <option
+          value="situation-game"
+          defaultChecked={gameType === 'situation-game' ? true : false}
+        >
+          {SITUATION_GAME}
+        </option>
       </Select>
     </FormatContainer>
   );
