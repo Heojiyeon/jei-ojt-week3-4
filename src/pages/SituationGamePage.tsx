@@ -1,6 +1,4 @@
 import { SavedComponent, addedGroup, addedImage } from '@/atoms/component';
-import { gameTypeAtom } from '@/atoms/problem';
-import Modal from '@/components/common/Modal';
 import { getIndexedDB } from '@/data';
 import { ChoiceOptionContent } from '@/types/Choice';
 import {
@@ -10,9 +8,9 @@ import {
   addExistedRectComponent,
   addExistedTextComponent,
 } from '@/utils/handleComponent';
+import styled from '@emotion/styled';
 import { fabric } from 'fabric';
 import { Ellipse, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
-import { useAtomValue } from 'jotai';
 import { useEffect, useRef, useState } from 'react';
 
 interface Problem {
@@ -29,9 +27,8 @@ interface HandledProblem {
 
 const { VITE_TARGET_ORIGIN } = import.meta.env;
 
-const GamePage = () => {
+const SituationGamePage = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
-  const gameType = useAtomValue(gameTypeAtom);
 
   const [currentProblemOrder, setCurrentProblemOrder] = useState(0);
   const [countOfCorrect, setCountOfCorrect] = useState(0);
@@ -97,18 +94,18 @@ const GamePage = () => {
   const fetchData = async () => {
     const entireProblems: HandledProblem[] = [];
     try {
-      if (gameType !== null) {
-        const problems = (await getIndexedDB({ gameType })) as Problem[];
+      const problems = (await getIndexedDB({
+        gameType: 'situation-game',
+      })) as Problem[];
 
-        problems.map((problem: Problem) => {
-          const modifiedProblem = {
-            ...problem,
-            content: JSON.parse(problem.content),
-            choice: JSON.parse(problem.choice),
-          };
-          entireProblems.push(modifiedProblem);
-        });
-      }
+      problems.map((problem: Problem) => {
+        const modifiedProblem = {
+          ...problem,
+          content: JSON.parse(problem.content),
+          choice: JSON.parse(problem.choice),
+        };
+        entireProblems.push(modifiedProblem);
+      });
     } catch (error) {
       console.error('Error getting problems:', error);
     }
@@ -373,12 +370,17 @@ const GamePage = () => {
   }, [canvasRef, currentProblemOrder]);
 
   return (
-    <div>
-      <Modal>
-        <canvas id="game-canvas"></canvas>
-      </Modal>
-    </div>
+    <CanvasContainer>
+      <canvas id="game-canvas"></canvas>
+    </CanvasContainer>
   );
 };
 
-export default GamePage;
+const CanvasContainer = styled('div')`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+export default SituationGamePage;

@@ -145,7 +145,7 @@ export const getIndexedDB = ({ gameType }: getIndexedDBProp) => {
         };
       } else if (gameType === 'situation-game') {
         const problemStore = request.result
-          .transaction(['numbsituationer-game'])
+          .transaction(['situation-game'])
           .objectStore('situation-game');
 
         problemStore.getAll().onsuccess = e => {
