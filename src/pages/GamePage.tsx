@@ -1,4 +1,5 @@
 import { SavedComponent, addedGroup, addedImage } from '@/atoms/component';
+import { gameTypeAtom } from '@/atoms/problem';
 import Modal from '@/components/common/Modal';
 import { getIndexedDB } from '@/data';
 import { ChoiceOptionContent } from '@/types/Choice';
@@ -11,6 +12,7 @@ import {
 } from '@/utils/handleComponent';
 import { fabric } from 'fabric';
 import { Ellipse, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
+import { useAtomValue } from 'jotai';
 import { useEffect, useRef, useState } from 'react';
 
 interface Problem {
@@ -29,6 +31,7 @@ const { VITE_TARGET_ORIGIN } = import.meta.env;
 
 const GamePage = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
+  const gameType = useAtomValue(gameTypeAtom);
 
   const [currentProblemOrder, setCurrentProblemOrder] = useState(0);
   const [countOfCorrect, setCountOfCorrect] = useState(0);
@@ -60,6 +63,15 @@ const GamePage = () => {
     }
     // 오답인 경우
     else {
+      setCountOfCorrect(prevCountOfCorrect => {
+        // 정답이 없는 경우 0 저장
+        let result = 0;
+
+        if (prevCountOfCorrect) {
+          result = prevCountOfCorrect;
+        }
+        return result;
+      });
       bubbleText = new fabric.Text('오답입니다!', {
         fontSize: 30,
         fill: '#E5001A',
@@ -85,7 +97,7 @@ const GamePage = () => {
   const fetchData = async () => {
     const entireProblems: HandledProblem[] = [];
     try {
-      const problems = (await getIndexedDB()) as Problem[];
+      const problems = (await getIndexedDB({ gameType })) as Problem[];
 
       problems.map((problem: Problem) => {
         const modifiedProblem = {
@@ -112,13 +124,17 @@ const GamePage = () => {
     });
 
     /**
-     * 문제 생성∏
+     * 문제 생성
      */
     const handleFetchData = async () => {
       const problems = await fetchData();
 
       if (currentProblemOrder >= problems.length) {
-        window.parent.postMessage(countOfCorrect, VITE_TARGET_ORIGIN);
+        const result = [
+          countOfCorrect === 0 ? 0 : countOfCorrect,
+          problems[0].id,
+        ];
+        window.parent.postMessage(result, VITE_TARGET_ORIGIN);
         return;
       }
 

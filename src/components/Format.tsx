@@ -1,14 +1,17 @@
 import { choiceComponentAtom, entireComponentAtom } from '@/atoms/component';
-import { problemsAtom } from '@/atoms/problem';
+import { gameTypeAtom, problemsAtom } from '@/atoms/problem';
+import { addIndexedDB } from '@/data';
 import styled from '@emotion/styled';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
 import Button from './common/Button';
 
 const Format = () => {
-  const setProblems = useSetAtom(problemsAtom);
-  const choiceComponent = useAtomValue(choiceComponentAtom);
+  const [problems, setProblems] = useAtom(problemsAtom);
   const [entireComponent, setEntireComponent] = useAtom(entireComponentAtom);
+
+  const gameType = useAtomValue(gameTypeAtom);
+  const choiceComponent = useAtomValue(choiceComponentAtom);
 
   const handleReset = () => {
     if (!window.localStorage.getItem('entireComponent')) {
@@ -32,6 +35,7 @@ const Format = () => {
           },
         ];
       });
+      addIndexedDB({ gameType, problems });
     }
   };
 
