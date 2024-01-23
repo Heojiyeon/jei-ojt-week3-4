@@ -1,11 +1,11 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainPage from './pages/MainPage';
 import NumberGamePage from './pages/NumberGamePage';
 import SituationGamePage from './pages/SituationGamePage';
 
 const AppRouter = () => {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/situation-game" element={<SituationGamePage />} />
