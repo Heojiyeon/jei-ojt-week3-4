@@ -3,9 +3,11 @@ import MainPage from './pages/MainPage';
 import NumberGamePage from './pages/NumberGamePage';
 import SituationGamePage from './pages/SituationGamePage';
 
+const { VITE_PUBLIC_URL } = import.meta.env;
+
 const AppRouter = () => {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    <Router basename={VITE_PUBLIC_URL}>
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/situation-game" element={<SituationGamePage />} />
