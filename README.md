@@ -13,3 +13,5 @@
 
 ### 핵심 화면
 ![image](https://github.com/Heojiyeon/jei-ojt-week3-4/assets/33304871/1b5481a6-0b2a-4b0e-b5af-085b827cbc69)
+
+Copyright © JEI corporation. All rights reserved.
