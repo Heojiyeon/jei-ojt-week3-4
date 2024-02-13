@@ -32,6 +32,7 @@ import { Ellipse, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import FabricFeedbackText from '@/components/Fabric/FabricFeedbackText';
+import { ENTIRE_COMPONENT } from '@/constants/game';
 
 /**
  * @returns 메인 페이지
@@ -109,8 +110,7 @@ const MainPage = () => {
       /**
        * 기존에 저장된 컴포넌트가 있는지 확인해서 화면에 출력
        */
-      const entireComponentData =
-        window.localStorage.getItem('entireComponent');
+      const entireComponentData = window.localStorage.getItem(ENTIRE_COMPONENT);
 
       if (entireComponentData) {
         JSON.parse(entireComponentData).map(

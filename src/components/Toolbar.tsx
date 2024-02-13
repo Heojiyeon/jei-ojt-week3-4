@@ -42,6 +42,7 @@ import { Image } from '@/types/Image';
 import { clickImage, getImageUrl } from '@/utils/handleImage';
 import { useAtomValue, useSetAtom } from 'jotai';
 import PopOver from './common/PopOver';
+import { ENTIRE_COMPONENT } from '@/constants/game';
 
 /**
  * @returns 툴바 컴포넌트
@@ -88,14 +89,14 @@ const Toolbar = () => {
      * @description 기존에 존재하는 전체 컴포넌트 정보
      */
     const alreadyExistedEntireComponent =
-      window.localStorage.getItem('entireComponent');
+      window.localStorage.getItem(ENTIRE_COMPONENT);
 
     if (alreadyExistedEntireComponent === JSON.stringify(entireComponent)) {
       return;
     }
 
     window.localStorage.setItem(
-      'entireComponent',
+      ENTIRE_COMPONENT,
       JSON.stringify(entireComponent)
     );
   };

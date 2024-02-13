@@ -1,3 +1,4 @@
+import { FEEDBACK_CORRECT, FEEDBACK_WRONG } from '@/constants/game';
 import fabric from '@/controller/fabric';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,7 +16,7 @@ class FabricFeedbackText {
 
   constructor({ isCorrect, currentTop, currentLeft }: FabricFeedbackTextProp) {
     this.FabricFeedbackText = new fabric.Text(
-      isCorrect ? '정답입니다!' : '오답입니다!',
+      isCorrect ? FEEDBACK_CORRECT : FEEDBACK_WRONG,
       {
         name: uuidv4(),
         fontSize: 30,

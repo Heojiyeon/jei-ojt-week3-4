@@ -1,3 +1,4 @@
+import { GAME_TYPE_SITUATION } from '@/constants/game';
 import { fetchData, handleFetchData } from '@/utils/handleFetchData';
 import styled from '@emotion/styled';
 import { fabric } from 'fabric';
@@ -13,7 +14,7 @@ const SituationGamePage = () => {
   const [countOfCorrect, setCountOfCorrect] = useState(0);
 
   const fetchSituationGameData = async () => {
-    const problems = await fetchData('situation-game');
+    const problems = await fetchData(GAME_TYPE_SITUATION);
 
     handleFetchData({
       currentProblemOrder,

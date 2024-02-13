@@ -19,6 +19,7 @@ import {
   selectedColorAtom,
   typeOfPaintAtom,
 } from '@/atoms/style';
+import { ENTIRE_COMPONENT } from '@/constants/game';
 import fabric from '@/controller/fabric';
 import {
   addExistedCircleComponent,
@@ -422,7 +423,7 @@ const View = () => {
       backgroundColor: '#ffffff',
     });
 
-    const entireComponentData = window.localStorage.getItem('entireComponent');
+    const entireComponentData = window.localStorage.getItem(ENTIRE_COMPONENT);
 
     if (entireComponentData) {
       setEntireComponent(JSON.parse(entireComponentData));

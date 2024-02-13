@@ -1,6 +1,12 @@
 import { choiceComponentAtom, entireComponentAtom } from '@/atoms/component';
 import { gameTypeAtom, problemsAtom } from '@/atoms/problem';
-import { NUMBER_GAME, SITUATION_GAME } from '@/constants/game';
+import {
+  ENTIRE_COMPONENT,
+  GAME_TYPE_NUMBER,
+  GAME_TYPE_SITUATION,
+  NUMBER_GAME,
+  SITUATION_GAME,
+} from '@/constants/game';
 import { addIndexedDB } from '@/data';
 import { Games } from '@/types/Game';
 import { Select } from '@chakra-ui/react';
@@ -31,7 +37,7 @@ const Format = () => {
    * 리셋 버튼 클릭 핸들링 함수
    */
   const handleReset = () => {
-    if (!window.localStorage.getItem('entireComponent')) {
+    if (!window.localStorage.getItem(ENTIRE_COMPONENT)) {
       return;
     }
     setEntireComponent([]);
@@ -83,13 +89,13 @@ const Format = () => {
       >
         <option
           value="number-game"
-          defaultChecked={gameType === 'number-game' ? true : false}
+          defaultChecked={gameType === GAME_TYPE_NUMBER ? true : false}
         >
           {NUMBER_GAME}
         </option>
         <option
           value="situation-game"
-          defaultChecked={gameType === 'situation-game' ? true : false}
+          defaultChecked={gameType === GAME_TYPE_SITUATION ? true : false}
         >
           {SITUATION_GAME}
         </option>

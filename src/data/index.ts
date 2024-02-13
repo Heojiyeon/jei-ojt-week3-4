@@ -1,4 +1,10 @@
 import { Problem } from '@/atoms/problem';
+import {
+  COMPLETE_TRANSACTION,
+  DO_NOT_SUPPORT,
+  FAILURE_TRANSACTION,
+} from '@/constants/db';
+import { GAME_TYPE_NUMBER, GAME_TYPE_SITUATION } from '@/constants/game';
 
 type addIndexedDBProp = {
   gameType: string;
@@ -16,7 +22,7 @@ export const createIndexedDB = () => {
   const idxDB = window.indexedDB;
 
   if (!idxDB) {
-    alert('indexedDB를 지원하지 않는 브라우저입니다!');
+    alert(DO_NOT_SUPPORT);
     return;
   }
 
@@ -28,8 +34,8 @@ export const createIndexedDB = () => {
    */
   request.onupgradeneeded = e => {
     db = (e.target as IDBOpenDBRequest).result;
-    db.createObjectStore('number-game');
-    db.createObjectStore('situation-game');
+    db.createObjectStore(GAME_TYPE_NUMBER);
+    db.createObjectStore(GAME_TYPE_SITUATION);
   };
 
   /**
@@ -47,7 +53,7 @@ export const addIndexedDB = ({ gameType, problems }: addIndexedDBProp) => {
   const idxDB = window.indexedDB;
 
   if (!idxDB) {
-    alert('indexedDB를 지원하지 않는 브라우저입니다!');
+    alert(DO_NOT_SUPPORT);
     return;
   }
 
@@ -60,9 +66,9 @@ export const addIndexedDB = ({ gameType, problems }: addIndexedDBProp) => {
   request.onsuccess = e => {
     db = (e.target as IDBOpenDBRequest).result;
 
-    if (gameType === 'number-game') {
-      const transaction = db.transaction(['number-game'], 'readwrite');
-      const numberGameStore = transaction.objectStore('number-game');
+    if (gameType === GAME_TYPE_NUMBER) {
+      const transaction = db.transaction([GAME_TYPE_NUMBER], 'readwrite');
+      const numberGameStore = transaction.objectStore(GAME_TYPE_NUMBER);
 
       problems &&
         problems.map((problem: Problem) => {
@@ -77,16 +83,16 @@ export const addIndexedDB = ({ gameType, problems }: addIndexedDBProp) => {
 
       // 트랜잭션 완료
       transaction.oncomplete = () => {
-        console.log('Transaction completed.');
+        console.log(COMPLETE_TRANSACTION);
       };
 
       // 트랜잭션 에러
       transaction.onerror = error => {
-        console.error('Transaction error:', error);
+        console.error(FAILURE_TRANSACTION, error);
       };
-    } else if (gameType === 'situation-game') {
-      const transaction = db.transaction(['situation-game'], 'readwrite');
-      const situationGameStore = transaction.objectStore('situation-game');
+    } else if (gameType === GAME_TYPE_SITUATION) {
+      const transaction = db.transaction([GAME_TYPE_SITUATION], 'readwrite');
+      const situationGameStore = transaction.objectStore(GAME_TYPE_SITUATION);
 
       problems &&
         problems.map((problem: Problem) => {
@@ -101,12 +107,12 @@ export const addIndexedDB = ({ gameType, problems }: addIndexedDBProp) => {
 
       // 트랜잭션 완료
       transaction.oncomplete = () => {
-        console.log('Transaction completed.');
+        console.log(COMPLETE_TRANSACTION);
       };
 
       // 트랜잭션 에러
       transaction.onerror = error => {
-        console.error('Transaction error:', error);
+        console.error(FAILURE_TRANSACTION, error);
       };
     }
   };
@@ -120,7 +126,7 @@ export const getIndexedDB = ({ gameType }: getIndexedDBProp) => {
   const idxDB = window.indexedDB;
 
   if (!idxDB) {
-    alert('indexedDB를 지원하지 않는 브라우저입니다!');
+    alert(DO_NOT_SUPPORT);
     return;
   }
 
@@ -139,20 +145,20 @@ export const getIndexedDB = ({ gameType }: getIndexedDBProp) => {
      * 트랜잭션(DB 상태 변화) 핸들링
      */
     request.onsuccess = () => {
-      if (gameType === 'number-game') {
+      if (gameType === GAME_TYPE_NUMBER) {
         const problemStore = request.result
-          .transaction(['number-game'])
-          .objectStore('number-game');
+          .transaction([GAME_TYPE_NUMBER])
+          .objectStore(GAME_TYPE_NUMBER);
 
         problemStore.getAll().onsuccess = e => {
           const problems = (e.target as IDBOpenDBRequest).result;
 
           resolve(problems);
         };
-      } else if (gameType === 'situation-game') {
+      } else if (gameType === GAME_TYPE_SITUATION) {
         const problemStore = request.result
-          .transaction(['situation-game'])
-          .objectStore('situation-game');
+          .transaction([GAME_TYPE_SITUATION])
+          .objectStore(GAME_TYPE_SITUATION);
 
         problemStore.getAll().onsuccess = e => {
           const problems = (e.target as IDBOpenDBRequest).result;

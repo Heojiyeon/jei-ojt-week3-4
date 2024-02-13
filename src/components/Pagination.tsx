@@ -2,6 +2,7 @@ import { selectedImagesAtom } from '@/atoms/component';
 import { ImagesAtom, numOfImagesAtom } from '@/atoms/image';
 import { modalContentAtom } from '@/atoms/modal';
 import { numOfPageLimitAtom, pageAtom } from '@/atoms/pagination';
+import { ALERT_FIRST_PAGE, ALERT_LAST_PAGE } from '@/constants/game';
 import { Image } from '@/types/Image';
 import { clickImage, getImageUrl } from '@/utils/handleImage';
 import styled from '@emotion/styled';
@@ -35,11 +36,11 @@ const Pagination = () => {
     if (isLeftSide) {
       startPageNumber > 1
         ? setStartPageNumber(prevStartPageNumber => (prevStartPageNumber -= 4))
-        : alert('가장 첫 페이지 입니다!');
+        : alert(ALERT_FIRST_PAGE);
     } else {
       startPageNumber <= 86
         ? setStartPageNumber(prevStartPageNumber => (prevStartPageNumber += 4))
-        : alert('가장 마지막 페이지 입니다!');
+        : alert(ALERT_LAST_PAGE);
     }
   };
 
