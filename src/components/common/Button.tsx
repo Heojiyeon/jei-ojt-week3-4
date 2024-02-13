@@ -8,6 +8,13 @@ type ButtonProp = {
   isFormat?: boolean;
 };
 
+/**
+ *
+ * @param children {ReactNode}
+ * @param onClick {() => void} 버튼 클릭 핸들링 함수
+ * @param isFormat {boolean} 포맷 버튼 여부
+ * @returns 버튼 컴포넌트
+ */
 const Button = ({ children, onClick, isFormat = false }: ButtonProp) => {
   return (
     <ButtonContainer isFormat={isFormat} onClick={onClick}>

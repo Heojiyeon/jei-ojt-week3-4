@@ -15,6 +15,12 @@ type ModalProps = {
   children: ReactNode;
 };
 
+/**
+ *
+ * @param title {string} 모달 제목
+ * @param children {ReactNode}
+ * @returns 모달 컴포넌트
+ */
 const Modal = ({ title, children }: ModalProps) => {
   const setPage = useSetAtom(pageAtom);
   const setIsOpenModal = useSetAtom(isOpenModalAtom);

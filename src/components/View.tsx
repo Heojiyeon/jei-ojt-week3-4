@@ -33,6 +33,10 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
+/**
+ *
+ * @returns 뷰 컴포넌트
+ */
 const View = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
 
@@ -54,8 +58,9 @@ const View = () => {
   const selectedBorderSize = useAtomValue(selectedBorderSizeAtom);
   const selectedBorderStyle = useAtomValue(selectedBorderStyleAtom);
 
-  /**
-   * 캔버스 내 변경된 컴포넌트 데이터 업데이트
+  /** @function
+   * @param currentActiveObjects 현재 활성화된 패브릭 객체 배열
+   * @description 캔버스 내 모든 패브릭 객체 중 활성화된 페브릭 객체 데이터 업데이트 함수
    */
   const updateEntireComponent = (
     currentActiveObjects: fabric.Object[] | undefined
@@ -74,8 +79,9 @@ const View = () => {
     });
   };
 
-  /**
-   * 캔버스 내 모든 컴포넌트 저장 함수
+  /** @function
+   * @param currentAddedComponent 현재 추가된 컴포넌트 정보
+   * @description 캔버스 내 모든 컴포넌트를 저장하는 함수
    */
   const addEntireComponent = (currentAddedComponent: TargetComponent) => {
     setEntireComponent(prevEntireComponent => [
@@ -87,8 +93,9 @@ const View = () => {
     ]);
   };
 
-  /**
-   * 선택된 컴포넌트 핸들링
+  /** @function
+   * @param targetComponent 현재 선택된 패브릭 컴포넌트
+   * @description 선택된 패브릭 컴포넌트를 활성화 컴포넌트 배열에 추가하는 함수
    */
   const addTargetComponent = (targetComponent: TargetComponent) => {
     setTargetComponent(prevTargetComponent => [
@@ -100,6 +107,10 @@ const View = () => {
     ]);
   };
 
+  /** @function
+   * @param targetComponent 현재 선택된 패브릭 컴포넌트
+   * @description 선택된 패브릭 컴포넌트를 활성화 컴포넌트 배열 내에서 제거하는 함수
+   */
   const deleteTargetComponent = (targetComponent: TargetComponent) => {
     setTargetComponent(prevTargetComponent => {
       return prevTargetComponent.filter(
@@ -108,8 +119,8 @@ const View = () => {
     });
   };
 
-  /**
-   * 캔버스 내 line 컴포넌트 추가 함수
+  /** @function
+   * @description 캔버스 내 라인 컴포넌트 추가 함수
    */
   const addLineComponent = () => {
     const newLine = new fabric.Polyline(
@@ -142,8 +153,8 @@ const View = () => {
     setAddComponent(null);
   };
 
-  /**
-   * 캔버스 내 Circle 컴포넌트 추가 함수
+  /** @function
+   * @description 캔버스 내 원 컴포넌트 추가 함수
    */
   const addCircleComponent = () => {
     const newCircle = new fabric.Ellipse({
@@ -172,8 +183,8 @@ const View = () => {
     setAddComponent(null);
   };
 
-  /**
-   * 캔버스 내 Rect 컴포넌트 추가 함수
+  /** @function
+   * @description 캔버스 내 사각형 컴포넌트 추가 함수
    */
   const addRectComponent = () => {
     const newRect = new fabric.Rect({
@@ -201,8 +212,8 @@ const View = () => {
     setAddComponent(null);
   };
 
-  /**
-   * 캔버스 내 텍스트 컴포넌트 추가 함수
+  /** @function
+   * @description 캔버스 내 텍스트 컴포넌트 추가 함수
    */
   const addTextComponent = () => {
     const newText = new fabric.Textbox('텍스트를 입력해주세요.', {
@@ -231,8 +242,8 @@ const View = () => {
     setAddComponent(null);
   };
 
-  /**
-   * 캔버스 내 이미지 컴포넌트 추가 함수
+  /** @function
+   * @description 캔버스 내 이미지 컴포넌트 추가 함수
    */
   const addImageComponent = () => {
     selectedImages.map((imagePath: string) => {
@@ -268,11 +279,11 @@ const View = () => {
     setAddSelectedImages(false);
   };
 
+  /** @function
+   * @description 캔버스 내 그룹 컴포넌트 추가 함수
+   */
   const createGroupComponent = () => {
     if (canvasRef.current !== null) {
-      // 그룹 컴포넌트 생성
-
-      // 그룹화에 사용된 컴포넌트 제거
       canvasRef.current.getActiveObjects().map(component => {
         setEntireComponent(prevEntireComponent => {
           return prevEntireComponent.filter(
@@ -284,7 +295,6 @@ const View = () => {
 
       const activatedObjects = canvasRef.current.getActiveObject();
 
-      // 그룹화 생성
       if (activatedObjects instanceof fabric.ActiveSelection) {
         const createdGroup = activatedObjects.toGroup();
 
@@ -306,18 +316,12 @@ const View = () => {
     setAddGroupComponent(false);
   };
 
-  /**
-   * 그룹 컴포넌트 생성
-   */
   useEffect(() => {
     if (addGroupComponent) {
       createGroupComponent();
     }
   }, [addGroupComponent, createGroupComponent]);
 
-  /**
-   * 캔버스 내 컴포넌트 추가
-   */
   useEffect(() => {
     switch (addComponent) {
       case 'image':
@@ -346,9 +350,6 @@ const View = () => {
     setAddComponent(null);
   }, [addComponent, addSelectedImages]);
 
-  /**
-   * 스타일 변경
-   */
   useEffect(() => {
     if (selectedColor || selectedBorderSize || selectedBorderStyle) {
       if (canvasRef.current !== null) {
@@ -414,9 +415,6 @@ const View = () => {
     }
   }, [canvasRef, selectedColor, typeOfPaint, selectedBorderSize]);
 
-  /**
-   * 캔버스 생성
-   */
   useEffect(() => {
     canvasRef.current = new fabric.Canvas('view-canvas', {
       width: 800,
@@ -424,9 +422,6 @@ const View = () => {
       backgroundColor: '#ffffff',
     });
 
-    /**
-     * 기존에 저장된 컴포넌트가 있는지 확인해서 화면에 출력
-     */
     const entireComponentData = window.localStorage.getItem('entireComponent');
 
     if (entireComponentData) {
@@ -504,7 +499,7 @@ const View = () => {
         canvasRef.current?.renderAll();
       });
     }
-    // 캔버스 내 객체 변경 시 데이터 변경
+
     canvasRef.current.on('object:modified', () => {
       const activeObjects = canvasRef.current?.getActiveObjects();
 
@@ -521,9 +516,6 @@ const View = () => {
     };
   }, [canvasRef]);
 
-  /**
-   * 캔버스 내부 및 선택지 옵션 컴포넌트 삭제
-   */
   useEffect(() => {
     document.onkeydown = e => {
       if (targetComponent.length !== 0 && e.key === 'Backspace') {

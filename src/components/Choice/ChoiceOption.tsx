@@ -1,8 +1,8 @@
 import { TargetComponent } from '@/atoms/component';
 import styled from '@emotion/styled';
 import { FaTrash } from 'react-icons/fa6';
-import Button from '../common/Button';
 import { v4 as uuidv4 } from 'uuid';
+import Button from '../common/Button';
 
 type ChoiceOptionProp = {
   choice: TargetComponent;
@@ -13,6 +13,16 @@ type ChoiceOptionProp = {
   deleteOption: (targetId: string | undefined) => void;
 };
 
+/**
+ *
+ * @param choice {TargetComponent} 컴포넌트 기본 정보
+ * @param order {number} 옵션 순서
+ * @param data {string} 이미지 src url
+ * @param isCorrect {boolean} 옵션의 정/오답 설정 값
+ * @param checkCorrectOption {(targetId : string => undefined) => void} 옵션의 정/오답 설정 함수
+ * @param deleteOption {{targetId: string| \ undefined} => void} 옵션 제거 함수
+ * @returns 옵션 컴포넌트
+ */
 const ChoiceOption = ({
   choice,
   order,

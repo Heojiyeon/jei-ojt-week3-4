@@ -1,5 +1,17 @@
 import { Problem } from '@/atoms/problem';
 
+type addIndexedDBProp = {
+  gameType: string;
+  problems: Problem[];
+};
+
+type getIndexedDBProp = {
+  gameType: string;
+};
+
+/** @function
+ * @description 현재 브라우저의 indexedDB 내 store를 생성하는 함수
+ */
 export const createIndexedDB = () => {
   const idxDB = window.indexedDB;
 
@@ -26,14 +38,11 @@ export const createIndexedDB = () => {
   request.onerror = e => console.error(e);
 };
 
-/**
- * 문제 저장하는 함수
+/** @function
+ * @param gameType {string} 현재 게임 타입
+ * @param problems {Problem[]} 추가될 문제 정보
+ * @description 게임 타입에 따라 indexedDB store에 문제를 추가 및 저장하는 함수
  */
-type addIndexedDBProp = {
-  gameType: string;
-  problems: Problem[];
-};
-
 export const addIndexedDB = ({ gameType, problems }: addIndexedDBProp) => {
   const idxDB = window.indexedDB;
 
@@ -103,13 +112,10 @@ export const addIndexedDB = ({ gameType, problems }: addIndexedDBProp) => {
   };
 };
 
-/**
- * 문제 가져오는 함수
+/** @function
+ * @param gameType {string} 현재 게임 타입
+ * @description 게임 타입에 따라 indexedDB에서 문제 정보를 가져오는 함수
  */
-type getIndexedDBProp = {
-  gameType: string;
-};
-
 export const getIndexedDB = ({ gameType }: getIndexedDBProp) => {
   const idxDB = window.indexedDB;
 

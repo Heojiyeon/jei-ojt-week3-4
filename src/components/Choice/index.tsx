@@ -9,12 +9,16 @@ import { CiCirclePlus } from 'react-icons/ci';
 import Button from '../common/Button';
 import ChoiceOption from './ChoiceOption';
 
+/**
+ * @returns 선택 문항 컴포넌트
+ */
 const Choice = () => {
   const [targetComponent, setTargetComponent] = useAtom(targetComponentAtom);
   const [choiceComponent, setChoiceComponent] = useAtom(choiceComponentAtom);
 
   /**
-   * 선택지에서 선택한 옵션을 제거하는 함수
+   * 특정 옵션을 삭제하는 함수
+   * @param taregetId {string | undefined} 옵션 아이디
    */
   const deleteOption = (taregetId: string | undefined) => {
     setChoiceComponent(prevChoiceComponent =>
@@ -23,7 +27,8 @@ const Choice = () => {
   };
 
   /**
-   * 선택한 옵션만 checked 되도록 하는 함수
+   * 옵션의 정/오답을 설정하는 함수
+   * @param targetId {string | undefined} 옵션 아이디
    */
   const checkCorrectOption = (targetId: string | undefined) => {
     setChoiceComponent(prevChoiceComponent => {
@@ -42,10 +47,10 @@ const Choice = () => {
   };
 
   /**
-   * 컴포넌트를 선택지에 추가하는 함수
+   * 특정 컴포넌트를 선택지에 추가하는 함수
    */
+
   const handleAddChoiceButton = () => {
-    // choice 형태에 필요한 속성 추가해야 함
     if (targetComponent) {
       targetComponent.map(component => {
         const newChoice: ChoiceComponent = {

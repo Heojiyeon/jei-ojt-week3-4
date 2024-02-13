@@ -6,6 +6,10 @@ type FabricRectProp = {
   addTargetComponent: (targetComponent: TargetComponent) => void;
   deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
+
+/**
+ * 패브릭 사각형 컴포넌트
+ */
 class FabricRect {
   private FabricRect: fabric.Rect;
 

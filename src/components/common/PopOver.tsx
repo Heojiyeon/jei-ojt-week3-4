@@ -13,6 +13,12 @@ type PopOverProp = {
   content: ReactNode;
 };
 
+/**
+ *
+ * @param trigger {ReactNode}
+ * @param content {ReactNode}
+ * @returns 팝오버 컴포넌트
+ */
 const PopOver = ({ trigger, content }: PopOverProp) => {
   return (
     <Popover>

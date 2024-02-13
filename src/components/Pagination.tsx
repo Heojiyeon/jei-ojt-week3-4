@@ -10,6 +10,9 @@ import { useState } from 'react';
 
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from 'react-icons/ai';
 
+/**
+ * @returns 페이지네이션 컴포넌트
+ */
 const Pagination = () => {
   const images = useAtomValue(ImagesAtom);
   const totalNumOfImages = useAtomValue(numOfImagesAtom);
@@ -23,6 +26,27 @@ const Pagination = () => {
 
   const numOfImages = Math.ceil(totalNumOfImages / numOfPageLimit);
 
+  /**
+   * 이동 버튼 클릭 핸들링 함수
+   * @param isLeftSide {boolean} 왼쪽 버튼 여부
+   * @param startPageNumber {number} 현재 시작 페이지 번호
+   */
+  const handleMoveButton = (isLeftSide: boolean, startPageNumber: number) => {
+    if (isLeftSide) {
+      startPageNumber > 1
+        ? setStartPageNumber(prevStartPageNumber => (prevStartPageNumber -= 4))
+        : alert('가장 첫 페이지 입니다!');
+    } else {
+      startPageNumber <= 86
+        ? setStartPageNumber(prevStartPageNumber => (prevStartPageNumber += 4))
+        : alert('가장 마지막 페이지 입니다!');
+    }
+  };
+
+  /**
+   * 페이지 번호에 따른 모달 내 이미지 컴포넌트 생성 함수
+   * @param currentPage 현재 페이지 번호
+   */
   const setModalContentByPage = async (currentPage: number) => {
     const offset = currentPage * numOfPageLimit;
 
@@ -52,17 +76,7 @@ const Pagination = () => {
 
   return (
     <PaginationContainer>
-      <StyledButton
-        onClick={() => {
-          if (startPageNumber > 1) {
-            setStartPageNumber(
-              prevStartPageNumber => (prevStartPageNumber -= 4)
-            );
-          } else {
-            alert('가장 첫 페이지 입니다!');
-          }
-        }}
-      >
+      <StyledButton onClick={() => handleMoveButton(true, startPageNumber)}>
         <AiOutlineDoubleLeft />
       </StyledButton>
       <div id="for-button">
@@ -84,17 +98,7 @@ const Pagination = () => {
             }
           })}
       </div>
-      <StyledButton
-        onClick={() => {
-          if (startPageNumber <= 86) {
-            setStartPageNumber(
-              prevStartPageNumber => (prevStartPageNumber += 4)
-            );
-          } else {
-            alert('가장 마지막 페이지 입니다!');
-          }
-        }}
-      >
+      <StyledButton onClick={() => handleMoveButton(false, startPageNumber)}>
         <AiOutlineDoubleRight />
       </StyledButton>
     </PaginationContainer>

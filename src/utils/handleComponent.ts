@@ -2,8 +2,10 @@ import { TargetComponent, addedGroup, addedImage } from '@/atoms/component';
 import { Ellipse, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
 import { fabric } from 'fabric';
 
-/**
- * 캔버스 내 line 컴포넌트 추가 함수
+/** @function
+ * @param data 패브릭 직선 컴포넌트를 생성하기 위해 필요한 정보
+ * @returns 패브릭 직선 컴포넌트
+ * @description 이미 가진 정보를 기반으로 패브릭 직선 컴포넌트를 생성하는 함수
  */
 export const addExistedLineComponent = (data: Polyline) => {
   const newLine = new fabric.Polyline(data?.points!, {
@@ -33,8 +35,10 @@ export const addExistedLineComponent = (data: Polyline) => {
   return newLine;
 };
 
-/**
- * 캔버스 내 Circle 컴포넌트 추가 함수
+/** @function
+ * @param data 패브릭 원 컴포넌트를 생성하기 위해 필요한 정보
+ * @returns 패브릭 원 컴포넌트
+ * @description 이미 가진 정보를 기반으로 패브릭 원 컴포넌트를 생성하는 함수
  */
 export const addExistedCircleComponent = (data: Ellipse) => {
   const newCircle = new fabric.Ellipse({
@@ -68,8 +72,10 @@ export const addExistedCircleComponent = (data: Ellipse) => {
   return newCircle;
 };
 
-/**
- * 캔버스 내 Rect 컴포넌트 추가 함수
+/** @function
+ * @param data 패브릭 사각형 컴포넌트를 생성하기 위해 필요한 정보
+ * @returns 패브릭 사각형 컴포넌트
+ * @description 이미 가진 정보를 기반으로 패브릭 사각형 컴포넌트를 생성하는 함수
  */
 export const addExistedRectComponent = (data: Rect) => {
   const newRect = new fabric.Rect({
@@ -100,8 +106,10 @@ export const addExistedRectComponent = (data: Rect) => {
   return newRect;
 };
 
-/**
- * 캔버스 내 텍스트 컴포넌트 추가 함수
+/** @function
+ * @param data 패브릭 텍스트 컴포넌트를 생성하기 위해 필요한 정보
+ * @returns 패브릭 텍스트 컴포넌트
+ * @description 이미 가진 정보를 기반으로 패브릭 텍스트 컴포넌트를 생성하는 함수
  */
 export const addExistedTextComponent = (data: Textbox) => {
   const newText = new fabric.Textbox('Text', {
@@ -134,8 +142,10 @@ export const addExistedTextComponent = (data: Textbox) => {
   return newText;
 };
 
-/**
- * 캔버스 내 이미지 컴포넌트 추가 함수
+/** @function
+ * @param data 패브릭 이미지 컴포넌트를 생성하기 위해 필요한 정보
+ * @returns 패브릭 이미지 컴포넌트
+ * @description 이미 가진 정보를 기반으로 패브릭 이미지 컴포넌트를 생성하는 함수
  */
 export const addExistedImageComponent = (data: addedImage) => {
   return new Promise((resolve, _) => {
@@ -169,8 +179,12 @@ export const addExistedImageComponent = (data: addedImage) => {
   });
 };
 
+/** @function
+ * @param data 패브릭 그룹 컴포넌트를 생성하기 위해 필요한 정보
+ * @returns 패브릭 그룹 컴포넌트
+ * @description 이미 가진 정보를 기반으로 패브릭 그룹 컴포넌트를 생성하는 함수
+ */
 export const addExistedGroupComponent = (data: addedGroup) => {
-  // objects에 따라 생성
   const createdObjects: TargetComponent[] = [];
 
   data.objects.map(async object => {
@@ -204,10 +218,11 @@ export const addExistedGroupComponent = (data: addedGroup) => {
         break;
     }
   });
-  // group에 추가
+
   const newGroup = new fabric.Group(createdObjects, {
     top: data.top,
     left: data.left,
   });
+
   return newGroup;
 };

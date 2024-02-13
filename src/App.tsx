@@ -4,9 +4,6 @@ import Layout from './components/Layout';
 import { createIndexedDB } from './data';
 
 const App = () => {
-  /**
-   * indexedDB 생성
-   */
   useEffect(() => {
     createIndexedDB();
   }, []);

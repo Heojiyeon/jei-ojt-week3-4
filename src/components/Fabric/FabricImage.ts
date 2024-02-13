@@ -8,6 +8,9 @@ type FabricImageProp = {
   deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
 
+/**
+ * 패브릭 이미지 컴포넌트
+ */
 class FabricImage {
   private FabricImage: fabric.Image;
 

@@ -9,6 +9,9 @@ import { useAtom, useAtomValue } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
 import Button from './common/Button';
 
+/**
+ * @returns 포맷 컴포넌트
+ */
 const Format = () => {
   const [problems, setProblems] = useAtom(problemsAtom);
   const [entireComponent, setEntireComponent] = useAtom(entireComponentAtom);
@@ -16,10 +19,17 @@ const Format = () => {
 
   const choiceComponent = useAtomValue(choiceComponentAtom);
 
+  /**
+   * 게임 타입을 설정하는 함수
+   * @param currentGameType {Games} 현재 게임 타입
+   */
   const handleGameType = (currentGameType: Games) => {
     setGameType(currentGameType);
   };
 
+  /**
+   * 리셋 버튼 클릭 핸들링 함수
+   */
   const handleReset = () => {
     if (!window.localStorage.getItem('entireComponent')) {
       return;
@@ -30,6 +40,9 @@ const Format = () => {
     window.location.reload();
   };
 
+  /**
+   * 문제 생성 함수
+   */
   const createProblem = () => {
     if (entireComponent && gameType !== null) {
       setProblems(prevProblems => {
@@ -46,8 +59,11 @@ const Format = () => {
     }
   };
 
+  /**
+   * gameType에 따른 경로 이동 함수
+   */
   const showProblem = () => {
-    window.location.replace('/game');
+    window.location.replace(`/${gameType}`);
   };
 
   return (

@@ -6,6 +6,10 @@ type FabricPolyLineProp = {
   addTargetComponent: (targetComponent: TargetComponent) => void;
   deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
+
+/**
+ * 패브릭 직선 컴포넌트
+ */
 class FabricPolyLine {
   private FabricPolyline: fabric.Polyline;
 

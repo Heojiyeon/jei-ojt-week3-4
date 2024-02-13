@@ -43,6 +43,9 @@ import { clickImage, getImageUrl } from '@/utils/handleImage';
 import { useAtomValue, useSetAtom } from 'jotai';
 import PopOver from './common/PopOver';
 
+/**
+ * @returns 툴바 컴포넌트
+ */
 const Toolbar = () => {
   const setIsOpenModal = useSetAtom(isOpenModalAtom);
   const setModalTitle = useSetAtom(modalTitleAtom);
@@ -64,9 +67,15 @@ const Toolbar = () => {
   const entireComponent = useAtomValue(entireComponentAtom);
   const choiceComponent = useAtomValue(choiceComponentAtom);
 
+  /** @function
+   * @description 저장 버튼 클릭 핸들링 함수
+   */
   const handleSaveButton = () => {
     window.localStorage.clear();
-    // 보기 문항 정보 저장
+
+    /** @constant
+     * @description 기존에 존재하는 선택지 옵션 정보
+     */
     const alreadyExistedChoices = window.localStorage.getItem('choices');
 
     if (alreadyExistedChoices === JSON.stringify(choiceComponent)) {
@@ -75,7 +84,9 @@ const Toolbar = () => {
 
     window.localStorage.setItem('choices', JSON.stringify(choiceComponent));
 
-    // 캔버스 내 전체 컴포넌트 정보 저장
+    /** @constant
+     * @description 기존에 존재하는 전체 컴포넌트 정보
+     */
     const alreadyExistedEntireComponent =
       window.localStorage.getItem('entireComponent');
 
@@ -89,8 +100,12 @@ const Toolbar = () => {
     );
   };
 
-  /**
-   * 스타일링 함수
+  /** @function
+   * @param currentType {string} 현재 스타일링 타입
+   * @param currentColor  {string} 현재 색상
+   * @param currentStrokeWidth {number} 현재 선의 넓이
+   * @param currentStorkeStyle {string} 현재 선의 스타일
+   * @description 스타일링 추가 함수
    */
   const handleStyle = (
     currentType: string,
@@ -100,17 +115,15 @@ const Toolbar = () => {
   ) => {
     setTypeOfPaint(currentType as TypeOfPaint);
 
-    if (currentColor) {
-      setSelectedColor(currentColor as SelectedColor);
-    } else if (currentStrokeWidth) {
+    currentColor && setSelectedColor(currentColor as SelectedColor);
+    currentStrokeWidth &&
       setSelectedBorderSize(currentStrokeWidth as SelectedBorderSize);
-    } else if (currentStorkeStyle) {
+    currentStorkeStyle &&
       setSelectedBorderStyle(currentStorkeStyle as SelectedBorderStyle);
-    }
   };
 
-  /**
-   * 최초 이미지 렌더링 함수
+  /** @function
+   * @description 최초 이미지 렌더링 함수
    */
   const handleImage = async () => {
     const images = await getImages();
@@ -147,6 +160,10 @@ const Toolbar = () => {
     }
   };
 
+  /** @function
+   * @param currTitle 현재 모달 제목
+   * @description 모달 핸들링 함수
+   */
   const handleModal = async (currTitle: string) => {
     setModalTitle(currTitle);
 

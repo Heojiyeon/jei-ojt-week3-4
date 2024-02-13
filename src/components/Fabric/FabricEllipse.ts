@@ -6,6 +6,10 @@ type FabricEllipseProp = {
   addTargetComponent: (targetComponent: TargetComponent) => void;
   deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
+
+/**
+ * 패브릭 원 컴포넌트
+ */
 class FabricEllipse {
   private FabricEllipse: fabric.Ellipse;
 

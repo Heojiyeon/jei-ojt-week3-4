@@ -5,6 +5,12 @@ type TextProp = {
   onClick: () => void;
 };
 
+/**
+ *
+ * @param content {string} 내부 값
+ * @param onClick {() => void} 텍스트 클릭 핸들링 함수
+ * @returns 텍스트 컴포넌트
+ */
 const Text = ({ content, onClick }: TextProp) => {
   return <TextContainer onClick={onClick}>{content}</TextContainer>;
 };

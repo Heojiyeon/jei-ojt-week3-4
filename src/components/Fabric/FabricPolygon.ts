@@ -7,6 +7,9 @@ export interface Point {
   y: number;
 }
 
+/**
+ * 패브릭 다각형 컴포넌트
+ */
 type FabricPolygonProp = {
   points: Point[];
   addTargetComponent: (targetComponent: TargetComponent) => void;

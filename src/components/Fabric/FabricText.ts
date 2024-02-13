@@ -7,6 +7,9 @@ type FabricTextProp = {
   deleteTargetComponent: (targetComponent: TargetComponent) => void;
 };
 
+/**
+ * 패브릭 텍스트 컴포넌트
+ */
 class FabricText {
   private FabricText: fabric.Text;
 

@@ -5,6 +5,11 @@ type LayoutProp = {
   children: ReactNode;
 };
 
+/**
+ *
+ * @param children {ReactNode}
+ * @returns 레이아웃 컴포넌트
+ */
 const Layout = ({ children }: LayoutProp) => {
   return (
     <CenteredLayoutContainer>
