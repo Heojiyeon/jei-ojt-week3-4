@@ -1,4 +1,5 @@
 import { SavedComponent, addedGroup, addedImage } from '@/atoms/component';
+import FabricFeedbackText from '@/components/Fabric/FabricFeedbackText';
 import { getIndexedDB } from '@/data';
 import { ChoiceOptionContent } from '@/types/Choice';
 import {
@@ -27,12 +28,22 @@ interface HandledProblem {
 
 const { VITE_TARGET_ORIGIN } = import.meta.env;
 
+/**
+ * @returns 숫자 맞추기 게임 페이지
+ */
 const NumberGamePage = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
 
   const [currentProblemOrder, setCurrentProblemOrder] = useState(0);
   const [countOfCorrect, setCountOfCorrect] = useState(0);
 
+  /** @function
+   * @param choiceComponent 모든 선택지 옵션 컴포넌트
+   * @param currentComponentName 선택된 컴포넌트 이름
+   * @param currentTop 컴포넌트의 y축 위치 값
+   * @param currentLeft 컴포넌트의 x축 위치 값
+   * @description 캔버스 내에 컴포넌트를 생성하는 함수
+   */
   const handlePreviewComponent = (
     choiceComponent: ChoiceOptionContent[],
     currentComponentName: string,
@@ -45,39 +56,27 @@ const NumberGamePage = () => {
 
     let bubbleText: fabric.Text;
 
-    // 정답인 경우
     if (correctComponentName && correctComponentName === currentComponentName) {
       setCountOfCorrect(prevCountOfCorrect => (prevCountOfCorrect += 1));
 
-      bubbleText = new fabric.Text('정답입니다!', {
-        fontSize: 30,
-        fill: '#0000FF',
-        fontFamily: 'SUIT-Regular',
-        top: currentTop,
-        left: currentLeft,
-      });
-      canvasRef.current?.add(bubbleText);
-    }
-    // 오답인 경우
-    else {
+      bubbleText = new FabricFeedbackText({
+        isCorrect: true,
+        currentTop,
+        currentLeft,
+      }).render();
+    } else {
       setCountOfCorrect(prevCountOfCorrect => {
-        // 정답이 없는 경우 0 저장
-        let result = 0;
+        return prevCountOfCorrect ? prevCountOfCorrect : 0;
+      });
 
-        if (prevCountOfCorrect) {
-          result = prevCountOfCorrect;
-        }
-        return result;
-      });
-      bubbleText = new fabric.Text('오답입니다!', {
-        fontSize: 30,
-        fill: '#E5001A',
-        fontFamily: 'SUIT-Regular',
-        top: currentTop,
-        left: currentLeft,
-      });
-      canvasRef.current?.add(bubbleText);
+      bubbleText = new FabricFeedbackText({
+        isCorrect: false,
+        currentTop,
+        currentLeft,
+      }).render();
     }
+
+    canvasRef.current?.add(bubbleText);
 
     setTimeout(() => {
       canvasRef.current?.remove(bubbleText);
@@ -88,8 +87,9 @@ const NumberGamePage = () => {
     }, 500);
   };
 
-  /**
-   * indexedDB 데이터 불러오기
+  /** @function
+   * @returns 문제 정보 데이터
+   * @description indexedDB 내부에서 문제 정보 데이터를 가져오는 함수
    */
   const fetchData = async () => {
     const entireProblems: HandledProblem[] = [];
@@ -122,8 +122,8 @@ const NumberGamePage = () => {
       backgroundColor: '#ffffff',
     });
 
-    /**
-     * 문제 생성
+    /** @function
+     * @description 전체 문제 정보 중 현재 문제 순서에 따라 문항을 생성하는 함수
      */
     const handleFetchData = async () => {
       const problems = await fetchData();

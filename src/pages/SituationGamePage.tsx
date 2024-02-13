@@ -1,4 +1,5 @@
 import { SavedComponent, addedGroup, addedImage } from '@/atoms/component';
+import FabricFeedbackText from '@/components/Fabric/FabricFeedbackText';
 import { getIndexedDB } from '@/data';
 import { ChoiceOptionContent } from '@/types/Choice';
 import {
@@ -27,6 +28,9 @@ interface HandledProblem {
 
 const { VITE_TARGET_ORIGIN } = import.meta.env;
 
+/**
+ * @returns 상황 추론 게임 페이지
+ */
 const SituationGamePage = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
 
@@ -49,35 +53,26 @@ const SituationGamePage = () => {
     if (correctComponentName && correctComponentName === currentComponentName) {
       setCountOfCorrect(prevCountOfCorrect => (prevCountOfCorrect += 1));
 
-      bubbleText = new fabric.Text('정답입니다!', {
-        fontSize: 30,
-        fill: '#0000FF',
-        fontFamily: 'SUIT-Regular',
-        top: currentTop,
-        left: currentLeft,
-      });
-      canvasRef.current?.add(bubbleText);
+      bubbleText = new FabricFeedbackText({
+        isCorrect: true,
+        currentTop,
+        currentLeft,
+      }).render();
     }
     // 오답인 경우
     else {
       setCountOfCorrect(prevCountOfCorrect => {
-        // 정답이 없는 경우 0 저장
-        let result = 0;
+        return prevCountOfCorrect ? prevCountOfCorrect : 0;
+      });
 
-        if (prevCountOfCorrect) {
-          result = prevCountOfCorrect;
-        }
-        return result;
-      });
-      bubbleText = new fabric.Text('오답입니다!', {
-        fontSize: 30,
-        fill: '#E5001A',
-        fontFamily: 'SUIT-Regular',
-        top: currentTop,
-        left: currentLeft,
-      });
-      canvasRef.current?.add(bubbleText);
+      bubbleText = new FabricFeedbackText({
+        isCorrect: false,
+        currentTop,
+        currentLeft,
+      }).render();
     }
+
+    canvasRef.current?.add(bubbleText);
 
     setTimeout(() => {
       canvasRef.current?.remove(bubbleText);
@@ -88,8 +83,9 @@ const SituationGamePage = () => {
     }, 500);
   };
 
-  /**
-   * indexedDB 데이터 불러오기
+  /** @function
+   * @returns 문제 정보 데이터
+   * @description indexedDB 내부에서 문제 정보 데이터를 가져오는 함수
    */
   const fetchData = async () => {
     const entireProblems: HandledProblem[] = [];
@@ -122,11 +118,12 @@ const SituationGamePage = () => {
       backgroundColor: '#ffffff',
     });
 
-    /**
-     * 문제 생성
+    /** @function
+     * @description 전체 문제 정보 중 현재 문제 순서에 따라 문항을 생성하는 함수
      */
     const handleFetchData = async () => {
       const problems = await fetchData();
+      console.log(problems);
 
       if (currentProblemOrder >= problems.length) {
         const result = [

@@ -31,21 +31,27 @@ import { fabric } from 'fabric';
 import { Ellipse, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
+import FabricFeedbackText from '@/components/Fabric/FabricFeedbackText';
 
+/**
+ * @returns 메인 페이지
+ */
 const MainPage = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
 
   const modalTitle = useAtomValue(modalTitleAtom);
   const modalContent = useAtomValue(modalContentAtom);
+  const isOpenPreviewModal = useAtomValue(isOpenPreviewModalAtom);
+  const selectedImages = useAtomValue(selectedImagesAtom);
 
   const [isOpenModal, setIsOpenModal] = useAtom(isOpenModalAtom);
-  const isOpenPreviewModal = useAtomValue(isOpenPreviewModalAtom);
-
-  const selectedImages = useAtomValue(selectedImagesAtom);
-  const setAddComponent = useSetAtom(addComponentAtom);
-
   const [choiceComponent, setChoiceComponent] = useAtom(choiceComponentAtom);
 
+  const setAddComponent = useSetAtom(addComponentAtom);
+
+  /** @function
+   * @description 이미지 추가 버튼 클릭 핸들링 함수
+   */
   const handleAddImagesButton = () => {
     if (selectedImages.length !== null) {
       setAddComponent('image');
@@ -53,6 +59,12 @@ const MainPage = () => {
     setIsOpenModal(prevIsOpenModal => !prevIsOpenModal);
   };
 
+  /** @function
+   * @param currentComponentName 선택된 컴포넌트 이름
+   * @param currentTop 컴포넌트의 y축 위치 값
+   * @param currentLeft 컴포넌트의 x축 위치 값
+   * @description 렌더링 캔버스 내에 컴포넌트를 생성하는 함수
+   */
   const handlePreviewComponent = (
     currentComponentName: string,
     currentTop: number,
@@ -62,27 +74,15 @@ const MainPage = () => {
       component => component.isCorrect === true
     )[0].name;
 
-    if (correctComponentName && correctComponentName === currentComponentName) {
-      const bubbleText = new fabric.Text('정답입니다!', {
-        fontSize: 30,
-        fill: '#0000FF',
-        fontFamily: 'SUIT-Regular',
-        top: currentTop,
-        left: currentLeft,
-      });
+    if (correctComponentName) {
+      const bubbleText = new FabricFeedbackText({
+        isCorrect: correctComponentName === currentComponentName ? true : false,
+        currentTop,
+        currentLeft,
+      }).render();
+
       canvasRef.current?.add(bubbleText);
-      setTimeout(() => {
-        canvasRef.current?.remove(bubbleText);
-      }, 500);
-    } else {
-      const bubbleText = new fabric.Text('오답입니다!', {
-        fontSize: 30,
-        fill: '#E5001A',
-        fontFamily: 'SUIT-Regular',
-        top: currentTop,
-        left: currentLeft,
-      });
-      canvasRef.current?.add(bubbleText);
+
       setTimeout(() => {
         canvasRef.current?.remove(bubbleText);
       }, 500);
