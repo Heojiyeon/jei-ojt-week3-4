@@ -8,6 +8,7 @@ import { useAtom } from 'jotai';
 import { CiCirclePlus } from 'react-icons/ci';
 import Button from '../common/Button';
 import ChoiceOption from './ChoiceOption';
+import { useCallback } from 'react';
 
 /**
  * @returns 선택 문항 컴포넌트
@@ -20,37 +21,42 @@ const Choice = () => {
    * 특정 옵션을 삭제하는 함수
    * @param taregetId {string | undefined} 옵션 아이디
    */
-  const deleteOption = (taregetId: string | undefined) => {
-    setChoiceComponent(prevChoiceComponent =>
-      prevChoiceComponent.filter(component => component.name !== taregetId)
-    );
-  };
+  const deleteOption = useCallback(
+    (taregetId: string | undefined) => {
+      setChoiceComponent(prevChoiceComponent =>
+        prevChoiceComponent.filter(component => component.name !== taregetId)
+      );
+    },
+    [setChoiceComponent]
+  );
 
   /**
    * 옵션의 정/오답을 설정하는 함수
    * @param targetId {string | undefined} 옵션 아이디
    */
-  const checkCorrectOption = (targetId: string | undefined) => {
-    setChoiceComponent(prevChoiceComponent => {
-      return prevChoiceComponent.map(component =>
-        component.name === targetId
-          ? {
-              ...component,
-              isCorrect: true,
-            }
-          : {
-              ...component,
-              isCorrect: false,
-            }
-      );
-    });
-  };
+  const checkCorrectOption = useCallback(
+    (targetId: string | undefined) => {
+      setChoiceComponent(prevChoiceComponent => {
+        return prevChoiceComponent.map(component =>
+          component.name === targetId
+            ? {
+                ...component,
+                isCorrect: true,
+              }
+            : {
+                ...component,
+                isCorrect: false,
+              }
+        );
+      });
+    },
+    [setChoiceComponent]
+  );
 
   /**
    * 특정 컴포넌트를 선택지에 추가하는 함수
    */
-
-  const handleAddChoiceButton = () => {
+  const handleAddChoiceButton = useCallback(() => {
     if (targetComponent) {
       targetComponent.map(component => {
         const newChoice: ChoiceComponent = {
@@ -68,7 +74,7 @@ const Choice = () => {
 
       setTargetComponent([]);
     }
-  };
+  }, [targetComponent, setChoiceComponent, setTargetComponent]);
 
   return (
     <ChoiceContainer>

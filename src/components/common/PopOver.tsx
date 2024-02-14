@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
   Portal,
 } from '@chakra-ui/react';
-import { ReactNode } from 'react';
+import { ReactNode, memo } from 'react';
 
 type PopOverProp = {
   trigger: ReactNode;
@@ -40,4 +40,4 @@ const PopOver = ({ trigger, content }: PopOverProp) => {
   );
 };
 
-export default PopOver;
+export default memo(PopOver);

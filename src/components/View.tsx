@@ -31,7 +31,7 @@ import {
 } from '@/utils/handleComponent';
 import { Ellipse, Polyline, Rect, Textbox } from 'fabric/fabric-impl';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { useEffect, useRef } from 'react';
+import { SetStateAction, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -42,17 +42,15 @@ const View = () => {
   const canvasRef = useRef<fabric.Canvas | null>(null);
 
   const [selectedImages, setSelectedImages] = useAtom(selectedImagesAtom);
-  const [addSelectedImages, setAddSelectedImages] = useAtom(
-    addSelectedImagesAtom
-  );
   const [addComponent, setAddComponent] = useAtom(addComponentAtom);
   const [addGroupComponent, setAddGroupComponent] = useAtom(
     addGroupComponentAtom
   );
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom);
   const [typeOfPaint, setTypeOfPaint] = useAtom(typeOfPaintAtom);
-
   const [targetComponent, setTargetComponent] = useAtom(targetComponentAtom);
+
+  const setAddSelectedImages = useSetAtom(addSelectedImagesAtom);
   const setEntireComponent = useSetAtom(entireComponentAtom);
   const setChoiceComponent = useSetAtom(choiceComponentAtom);
 
@@ -81,29 +79,19 @@ const View = () => {
   };
 
   /** @function
-   * @param currentAddedComponent 현재 추가된 컴포넌트 정보
-   * @description 캔버스 내 모든 컴포넌트를 저장하는 함수
+   * @param currentComponent 현재 선택된 패브릭 컴포넌트
+   * @param setCurrentComponent 배열에 추가하는 함수
+   * @description 선택된 패브릭 컴포넌트를 특정 배열에 추가하는 함수
    */
-  const addEntireComponent = (currentAddedComponent: TargetComponent) => {
-    setEntireComponent(prevEntireComponent => [
-      ...prevEntireComponent,
-      {
-        name: currentAddedComponent.name,
-        info: currentAddedComponent,
-      },
-    ]);
-  };
-
-  /** @function
-   * @param targetComponent 현재 선택된 패브릭 컴포넌트
-   * @description 선택된 패브릭 컴포넌트를 활성화 컴포넌트 배열에 추가하는 함수
-   */
-  const addTargetComponent = (targetComponent: TargetComponent) => {
-    setTargetComponent(prevTargetComponent => [
+  const addCurrentComponent = (
+    currentComponent: TargetComponent,
+    setCurrentComponent: (args_0: SetStateAction<SavedComponent[]>) => void
+  ) => {
+    setCurrentComponent(prevTargetComponent => [
       ...prevTargetComponent,
       {
-        name: targetComponent.name,
-        info: targetComponent,
+        name: currentComponent.name,
+        info: currentComponent,
       },
     ]);
   };
@@ -121,125 +109,36 @@ const View = () => {
   };
 
   /** @function
-   * @description 캔버스 내 라인 컴포넌트 추가 함수
+   * @param fabricComponent 현재 패브릭 컴포넌트
+   * @param currentCanvasRef 패브릭 컴포넌트를 생성할 캔버스 Ref
+   * @description 현재 패브릭 컴포넌트의 속성을 추가하고, 캔버스에 생성하는 함수
    */
-  const addLineComponent = () => {
-    const newLine = new fabric.Polyline(
-      [
-        { x: 10, y: 10 },
-        { x: 100, y: 100 },
-      ],
-      {
-        name: uuidv4(),
-        width: 100,
-        height: 100,
-        stroke: '#3c3c3c',
-        top: 10,
-        left: 10,
-        type: 'line',
-      }
-    );
+  const addFabricComponent = (
+    isExisted: boolean,
+    fabricComponent: fabric.Object,
+    currentCanvasRef: React.MutableRefObject<fabric.Canvas | null>,
+    name?: string
+  ) => {
+    if (!isExisted) {
+      fabricComponent.set({
+        data: fabricComponent.toDataURL(fabricComponent.data),
+      });
 
-    newLine.set('data', newLine.toDataURL(newLine.data));
-
-    newLine.on('selected', () => addTargetComponent(newLine));
-    newLine.on('deselected', () => deleteTargetComponent(newLine));
-
-    if (canvasRef.current !== null) {
-      canvasRef.current.add(newLine);
-      canvasRef.current.requestRenderAll();
+      fabricComponent.on('selected', () =>
+        addCurrentComponent(fabricComponent, setTargetComponent)
+      );
+      fabricComponent.on('deselected', () => deleteTargetComponent);
+    } else {
+      fabricComponent.set('name', name);
+      fabricComponent.set('selectable', true);
     }
 
-    addEntireComponent(newLine);
-    setAddComponent(null);
-  };
-
-  /** @function
-   * @description 캔버스 내 원 컴포넌트 추가 함수
-   */
-  const addCircleComponent = () => {
-    const newCircle = new fabric.Ellipse({
-      name: uuidv4(),
-      width: 100,
-      height: 100,
-      fill: '#ffffff',
-      stroke: '#3c3c3c',
-      top: 10,
-      left: 10,
-      rx: 50,
-      ry: 50,
-      type: 'circle',
-    });
-    newCircle.set('data', newCircle.toDataURL(newCircle.data));
-
-    newCircle.on('selected', () => addTargetComponent(newCircle));
-    newCircle.on('deselected', () => deleteTargetComponent(newCircle));
-
-    if (canvasRef.current !== null) {
-      canvasRef.current.add(newCircle);
-      canvasRef.current.requestRenderAll();
+    if (currentCanvasRef.current !== null) {
+      currentCanvasRef.current.add(fabricComponent);
+      currentCanvasRef.current.requestRenderAll();
     }
 
-    addEntireComponent(newCircle);
-    setAddComponent(null);
-  };
-
-  /** @function
-   * @description 캔버스 내 사각형 컴포넌트 추가 함수
-   */
-  const addRectComponent = () => {
-    const newRect = new fabric.Rect({
-      name: uuidv4(),
-      width: 100,
-      height: 100,
-      fill: '#ffffff',
-      stroke: '#3c3c3c',
-      top: 10,
-      left: 10,
-      type: 'rect',
-    });
-
-    newRect.set('data', newRect.toDataURL(newRect));
-
-    newRect.on('selected', () => addTargetComponent(newRect));
-    newRect.on('deselected', () => deleteTargetComponent(newRect));
-
-    if (canvasRef.current !== null) {
-      canvasRef.current.add(newRect);
-      canvasRef.current.requestRenderAll();
-    }
-
-    addEntireComponent(newRect);
-    setAddComponent(null);
-  };
-
-  /** @function
-   * @description 캔버스 내 텍스트 컴포넌트 추가 함수
-   */
-  const addTextComponent = () => {
-    const newText = new fabric.Textbox('텍스트를 입력해주세요.', {
-      name: uuidv4(),
-      stroke: '#3c3c3c',
-      width: 300,
-      height: 100,
-      top: 10,
-      left: 10,
-      fontSize: 30,
-      fontFamily: 'SUIT-Regular',
-      type: 'text',
-    });
-
-    newText.set('data', newText.toDataURL(newText.data));
-
-    newText.on('selected', () => addTargetComponent(newText));
-    newText.on('deselected', () => deleteTargetComponent(newText));
-
-    if (canvasRef.current !== null) {
-      canvasRef.current.add(newText);
-      canvasRef.current.requestRenderAll();
-    }
-
-    addEntireComponent(newText);
+    addCurrentComponent(fabricComponent, setEntireComponent);
     setAddComponent(null);
   };
 
@@ -258,17 +157,7 @@ const View = () => {
           img.set('left', 100);
           img.set('name', uuidv4());
 
-          img.set('data', img.toDataURL(img.data));
-
-          img.on('selected', () => addTargetComponent(img));
-          img.on('deselected', () => deleteTargetComponent(img));
-
-          addEntireComponent(img);
-
-          if (canvasRef.current !== null) {
-            canvasRef.current.add(img);
-            canvasRef.current.requestRenderAll();
-          }
+          addFabricComponent(false, img, canvasRef);
         },
         {
           crossOrigin: imagePath,
@@ -280,109 +169,141 @@ const View = () => {
     setAddSelectedImages(false);
   };
 
-  /** @function
-   * @description 캔버스 내 그룹 컴포넌트 추가 함수
-   */
-  const createGroupComponent = () => {
-    if (canvasRef.current !== null) {
-      canvasRef.current.getActiveObjects().map(component => {
-        setEntireComponent(prevEntireComponent => {
-          return prevEntireComponent.filter(
-            entireComponent => entireComponent.name !== component.name
-          );
-        });
-        return component;
-      });
-
-      const activatedObjects = canvasRef.current.getActiveObject();
-
-      if (activatedObjects instanceof fabric.ActiveSelection) {
-        const createdGroup = activatedObjects.toGroup();
-
-        createdGroup.set('name', uuidv4());
-        createdGroup.set('data', createdGroup.toDataURL(createdGroup.data));
-
-        createdGroup.on('selected', () => addTargetComponent(createdGroup));
-        createdGroup.on('deselected', () =>
-          deleteTargetComponent(createdGroup)
-        );
-
-        addEntireComponent(createdGroup);
-
-        canvasRef.current.add(createdGroup);
-        canvasRef.current.requestRenderAll();
-      }
-    }
-    setTargetComponent([]);
-    setAddGroupComponent(false);
-  };
-
   useEffect(() => {
+    /** @function
+     * @description 캔버스 내 그룹 컴포넌트 추가 함수
+     */
+    const createGroupComponent = () => {
+      if (canvasRef.current !== null) {
+        canvasRef.current.getActiveObjects().map(component => {
+          setEntireComponent(prevEntireComponent => {
+            return prevEntireComponent.filter(
+              entireComponent => entireComponent.name !== component.name
+            );
+          });
+          return component;
+        });
+
+        const activatedObjects = canvasRef.current.getActiveObject();
+
+        if (activatedObjects instanceof fabric.ActiveSelection) {
+          const createdGroup = activatedObjects.toGroup();
+
+          createdGroup.set('name', uuidv4());
+
+          addFabricComponent(false, createdGroup, canvasRef);
+        }
+      }
+      setTargetComponent([]);
+      setAddGroupComponent(false);
+    };
+
     if (addGroupComponent) {
       createGroupComponent();
     }
-  }, [addGroupComponent, createGroupComponent]);
+  }, [addGroupComponent]);
 
   useEffect(() => {
+    let currentComponent: fabric.Object | undefined;
+
     switch (addComponent) {
       case 'image':
         addImageComponent();
         break;
 
       case 'text':
-        addTextComponent();
+        currentComponent = new fabric.Textbox('텍스트를 입력해주세요.', {
+          name: uuidv4(),
+          stroke: '#3c3c3c',
+          width: 300,
+          height: 100,
+          top: 10,
+          left: 10,
+          fontSize: 30,
+          fontFamily: 'SUIT-Regular',
+          type: 'text',
+        });
         break;
 
       case 'rect':
-        addRectComponent();
+        currentComponent = new fabric.Rect({
+          name: uuidv4(),
+          width: 100,
+          height: 100,
+          fill: '#ffffff',
+          stroke: '#3c3c3c',
+          top: 10,
+          left: 10,
+          type: 'rect',
+        });
         break;
 
       case 'circle':
-        addCircleComponent();
+        currentComponent = new fabric.Ellipse({
+          name: uuidv4(),
+          width: 100,
+          height: 100,
+          fill: '#ffffff',
+          stroke: '#3c3c3c',
+          top: 10,
+          left: 10,
+          rx: 50,
+          ry: 50,
+          type: 'circle',
+        });
+
         break;
 
       case 'line':
-        addLineComponent();
+        currentComponent = new fabric.Polyline(
+          [
+            { x: 10, y: 10 },
+            { x: 100, y: 100 },
+          ],
+          {
+            name: uuidv4(),
+            width: 100,
+            height: 100,
+            stroke: '#3c3c3c',
+            top: 10,
+            left: 10,
+            type: 'line',
+          }
+        );
         break;
 
       default:
         break;
     }
-    setAddComponent(null);
-  }, [addComponent, addSelectedImages]);
+    if (currentComponent) {
+      addFabricComponent(false, currentComponent, canvasRef);
+    }
+  }, [addComponent, addImageComponent, addFabricComponent]);
 
   useEffect(() => {
-    if (selectedColor || selectedBorderSize || selectedBorderStyle) {
-      if (canvasRef.current !== null) {
-        const activeObjects = canvasRef.current?.getActiveObjects();
+    if (
+      canvasRef.current !== null &&
+      (selectedColor || selectedBorderSize || selectedBorderStyle)
+    ) {
+      const activeObjects = canvasRef.current?.getActiveObjects();
+
+      activeObjects.map(object => {
+        object.set('data', object.toDataURL(object.data));
 
         switch (typeOfPaint) {
           case 'fill':
-            activeObjects.map(object => {
-              object.set('fill', selectedColor as SelectedColor);
-              object.set('data', object.toDataURL(object.data));
-              return object;
-            });
+            object.set('fill', selectedColor as SelectedColor);
             break;
-          case 'border':
-            activeObjects.map(object => {
-              object.set('stroke', selectedColor as SelectedColor);
 
-              object.set('data', object.toDataURL(object.data));
-              return object;
-            });
+          case 'stroke':
+            object.set('stroke', selectedColor as SelectedColor);
             break;
+
           case 'strokeWidth':
-            activeObjects.map(object => {
-              object.set('strokeUniform', true);
-              object.set(
-                'strokeWidth',
-                selectedBorderSize as SelectedBorderSize
-              );
-              object.set('data', object.toDataURL(object.data));
-              return object;
-            });
+            object.set('strokeUniform', true);
+            object.set('strokeWidth', selectedBorderSize as SelectedBorderSize);
             break;
+
           case 'strokeStyle':
             let dashArray: number[] = [];
 
@@ -398,23 +319,29 @@ const View = () => {
                 break;
             }
 
-            activeObjects.map(object => {
-              object.set('strokeDashArray', dashArray);
-              object.set('data', object.toDataURL(object.data));
-              return object;
-            });
+            object.set('strokeDashArray', dashArray);
             break;
 
           default:
             break;
         }
-        updateEntireComponent(activeObjects);
-        canvasRef.current.renderAll();
-      }
+      });
+
+      updateEntireComponent(activeObjects);
+      canvasRef.current.renderAll();
+
       setTypeOfPaint(null);
       setSelectedColor('');
     }
-  }, [canvasRef, selectedColor, typeOfPaint, selectedBorderSize]);
+  }, [
+    canvasRef,
+    selectedColor,
+    selectedBorderSize,
+    typeOfPaint,
+    updateEntireComponent,
+    setTypeOfPaint,
+    setSelectedColor,
+  ]);
 
   useEffect(() => {
     canvasRef.current = new fabric.Canvas('view-canvas', {
@@ -429,75 +356,53 @@ const View = () => {
       setEntireComponent(JSON.parse(entireComponentData));
 
       JSON.parse(entireComponentData).map(async (component: SavedComponent) => {
+        let currentExistedComponent: fabric.Object | undefined;
+
         switch (component.info.type) {
           case 'group':
-            const createdGroup = addExistedGroupComponent(
+            currentExistedComponent = addExistedGroupComponent(
               component.info as addedGroup
             );
-            createdGroup.set('name', component.name);
-            createdGroup.set('selectable', true);
-
-            canvasRef.current?.add(createdGroup as addedGroup);
-            canvasRef.current?.requestRenderAll();
             break;
 
           case 'image':
-            const createdImage = (await addExistedImageComponent(
+            currentExistedComponent = (await addExistedImageComponent(
               component.info as addedImage
             )) as addedImage;
-            createdImage.set('name', component.name);
-            createdImage.set('selectable', true);
-
-            canvasRef.current?.add(createdImage as addedImage);
-            canvasRef.current?.requestRenderAll();
             break;
 
           case 'text':
-            const createdText = addExistedTextComponent(
+            currentExistedComponent = addExistedTextComponent(
               component.info as Textbox
             );
-            createdText.set('name', component.name);
-            createdText.set('selectable', true);
-
-            canvasRef.current?.add(createdText as Textbox);
-            canvasRef.current?.requestRenderAll();
             break;
 
           case 'rect':
-            const createdRect = addExistedRectComponent(component.info as Rect);
-            createdRect.set('name', component.name);
-            createdRect.set('selectable', true);
-
-            canvasRef.current?.add(createdRect as Rect);
-            canvasRef.current?.requestRenderAll();
+            currentExistedComponent = addExistedRectComponent(
+              component.info as Rect
+            );
             break;
 
           case 'circle':
-            const createdCircle = addExistedCircleComponent(
+            currentExistedComponent = addExistedCircleComponent(
               component.info as Ellipse
             );
-            createdCircle.set('name', component.name);
-            createdCircle.set('selectable', true);
-
-            canvasRef.current?.add(createdCircle as Ellipse);
-            canvasRef.current?.requestRenderAll();
             break;
 
           case 'line':
-            const createdLine = addExistedLineComponent(
+            currentExistedComponent = addExistedLineComponent(
               component.info as Polyline
             );
-            createdLine.set('name', component.name);
-            createdLine.set('selectable', true);
-
-            canvasRef.current?.add(createdLine as Polyline);
-            canvasRef.current?.requestRenderAll();
             break;
 
           default:
             break;
         }
-        canvasRef.current?.renderAll();
+        if (currentExistedComponent !== undefined) {
+          addFabricComponent(true, currentExistedComponent, canvasRef);
+
+          canvasRef.current?.renderAll();
+        }
       });
     }
 

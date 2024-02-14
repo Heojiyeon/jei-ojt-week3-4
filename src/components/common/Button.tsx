@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, memo } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 
@@ -56,4 +56,4 @@ const IconButtonContainer = css`
   }
 `;
 
-export default Button;
+export default memo(Button);

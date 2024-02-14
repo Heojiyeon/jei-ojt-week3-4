@@ -21,7 +21,7 @@ export type SelectedBorderStyle = 'solid' | 'dashed' | 'dotted';
 
 export type TypeOfPaint =
   | 'fill'
-  | 'border'
+  | 'stroke'
   | 'strokeWidth'
   | 'strokeStyle'
   | null;

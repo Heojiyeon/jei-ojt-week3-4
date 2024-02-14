@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { FaTrash } from 'react-icons/fa6';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../common/Button';
+import { memo } from 'react';
 
 type ChoiceOptionProp = {
   choice: TargetComponent;
@@ -84,4 +85,4 @@ const RemoveButtonContainer = styled('div')`
   display: flex;
 `;
 
-export default ChoiceOption;
+export default memo(ChoiceOption);

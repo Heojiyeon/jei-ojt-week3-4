@@ -14,6 +14,7 @@ import styled from '@emotion/styled';
 import { useAtom, useAtomValue } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
 import Button from './common/Button';
+import { useCallback } from 'react';
 
 /**
  * @returns 포맷 컴포넌트
@@ -36,7 +37,7 @@ const Format = () => {
   /**
    * 리셋 버튼 클릭 핸들링 함수
    */
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     if (!window.localStorage.getItem(ENTIRE_COMPONENT)) {
       return;
     }
@@ -44,12 +45,12 @@ const Format = () => {
 
     window.localStorage.clear();
     window.location.reload();
-  };
+  }, [setEntireComponent]);
 
   /**
    * 문제 생성 함수
    */
-  const createProblem = () => {
+  const createProblem = useCallback(() => {
     if (entireComponent && gameType !== null) {
       setProblems(prevProblems => {
         return [
@@ -63,14 +64,14 @@ const Format = () => {
       });
       addIndexedDB({ gameType, problems });
     }
-  };
+  }, [entireComponent, gameType, setProblems, addIndexedDB]);
 
   /**
    * gameType에 따른 경로 이동 함수
    */
-  const showProblem = () => {
+  const showProblem = useCallback(() => {
     window.location.replace(`/${gameType}`);
-  };
+  }, []);
 
   return (
     <FormatContainer>

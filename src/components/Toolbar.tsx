@@ -43,6 +43,7 @@ import { clickImage, getImageUrl } from '@/utils/handleImage';
 import { useAtomValue, useSetAtom } from 'jotai';
 import PopOver from './common/PopOver';
 import { ENTIRE_COMPONENT } from '@/constants/game';
+import { memo, useCallback } from 'react';
 
 /**
  * @returns 툴바 컴포넌트
@@ -51,7 +52,10 @@ const Toolbar = () => {
   const setIsOpenModal = useSetAtom(isOpenModalAtom);
   const setModalTitle = useSetAtom(modalTitleAtom);
   const setModalContent = useSetAtom(modalContentAtom);
-  const setAddGroupComponent = useSetAtom(addGroupComponentAtom);
+  const setAddGroupComponent = useCallback(
+    useSetAtom(addGroupComponentAtom),
+    []
+  );
 
   const setImages = useSetAtom(ImagesAtom);
   const setNumOfImages = useSetAtom(numOfImagesAtom);
@@ -108,20 +112,23 @@ const Toolbar = () => {
    * @param currentStorkeStyle {string} 현재 선의 스타일
    * @description 스타일링 추가 함수
    */
-  const handleStyle = (
-    currentType: string,
-    currentColor?: string,
-    currentStrokeWidth?: number,
-    currentStorkeStyle?: string
-  ) => {
-    setTypeOfPaint(currentType as TypeOfPaint);
+  const handleStyle = useCallback(
+    (
+      currentType: string,
+      currentColor?: string,
+      currentStrokeWidth?: number,
+      currentStorkeStyle?: string
+    ) => {
+      setTypeOfPaint(currentType as TypeOfPaint);
 
-    currentColor && setSelectedColor(currentColor as SelectedColor);
-    currentStrokeWidth &&
-      setSelectedBorderSize(currentStrokeWidth as SelectedBorderSize);
-    currentStorkeStyle &&
-      setSelectedBorderStyle(currentStorkeStyle as SelectedBorderStyle);
-  };
+      currentColor && setSelectedColor(currentColor as SelectedColor);
+      currentStrokeWidth &&
+        setSelectedBorderSize(currentStrokeWidth as SelectedBorderSize);
+      currentStorkeStyle &&
+        setSelectedBorderStyle(currentStorkeStyle as SelectedBorderStyle);
+    },
+    [setTypeOfPaint, setSelectedBorderSize, setSelectedColor]
+  );
 
   /** @function
    * @description 최초 이미지 렌더링 함수
@@ -165,16 +172,19 @@ const Toolbar = () => {
    * @param currTitle 현재 모달 제목
    * @description 모달 핸들링 함수
    */
-  const handleModal = async (currTitle: string) => {
-    setModalTitle(currTitle);
+  const handleModal = useCallback(
+    async (currTitle: string) => {
+      setModalTitle(currTitle);
 
-    if (currTitle === 'Image List') {
-      setIsOpenModal(true);
-      handleImage();
-    } else {
-      setIsOpenPreviewModal(true);
-    }
-  };
+      if (currTitle === 'Image List') {
+        setIsOpenModal(true);
+        handleImage();
+      } else {
+        setIsOpenPreviewModal(true);
+      }
+    },
+    [setModalTitle, setIsOpenModal, handleImage, setIsOpenPreviewModal]
+  );
 
   return (
     <ToolbarContainer>
@@ -228,7 +238,7 @@ const Toolbar = () => {
                 <ColorBoxLi
                   key={color.id}
                   onClick={() =>
-                    handleStyle('border', color.hex as SelectedColor)
+                    handleStyle('stroke', color.hex as SelectedColor)
                   }
                 >
                   <ColorBox
@@ -351,4 +361,4 @@ const BorderLi = styled('li')`
   }
 `;
 
-export default Toolbar;
+export default memo(Toolbar);
