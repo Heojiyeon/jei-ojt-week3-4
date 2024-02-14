@@ -1,8 +1,9 @@
 import { GAME_TYPE_SITUATION } from '@/constants/game';
+import useCanvas from '@/hooks/useCanvas';
 import { fetchData, handleFetchData } from '@/utils/handleFetchData';
 import styled from '@emotion/styled';
 import { fabric } from 'fabric';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 /**
  * @returns 상황 추론 게임 페이지
@@ -29,21 +30,10 @@ const SituationGamePage = () => {
   /**
    * 캔버스 생성
    */
-  useEffect(() => {
-    canvasRef.current = new fabric.Canvas('game-canvas', {
-      width: 900,
-      height: 700,
-      backgroundColor: '#ffffff',
-    });
-
-    fetchSituationGameData();
-
-    return () => {
-      if (canvasRef.current !== null) {
-        canvasRef.current.dispose();
-      }
-    };
-  }, [canvasRef, currentProblemOrder]);
+  useCanvas({
+    fetchDataFn: fetchSituationGameData,
+    currentCanvasRef: canvasRef,
+  });
 
   return (
     <CanvasContainer>
